@@ -1,0 +1,31 @@
+body{
+  background-color: #f2d492;
+}
+
+.title{
+  margin: auto;
+  width: 90%;
+  text-align: left;
+}
+
+.name{
+  font-size:750%;
+  font-family: 'Dosis', cursive;
+  color: #58355e;
+}
+
+.links{
+  display: flex;
+  margin: auto;
+  flex-direction: column;
+  text-align: right;
+  justify-content: space-between;
+  height: 400px;
+}
+
+.fas, .fab{
+  font-size:350%;
+  margin-right: 10%;
+  margin-left: 10%;
+  color: #363538;
+}
