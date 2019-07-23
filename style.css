@@ -17,27 +17,25 @@ body{
 .links{
   display: flex;
   flex-direction: column;
-  justify-content: center;
   height: 400px;
 }
 
 .fas, .fab{
   font-size:350%;
-  padding-right: 50px;
   align-self: center;
-  margin-left:5%;
-  margin-right: auto;
+  margin-right:25%;
   color: #cb4b16;
 }
 .link{
   display: flex;
   flex-direction: row;
   text-decoration: none;
+  justify-content: space-between;
 
 }
 .linktext{
   font-size:200%;
-  margin-left: auto;
+  margin-left: 25%;
   font-family: 'Dosis';
   color: #657b83;
 }
