@@ -1,27 +1,33 @@
-# sfcal
+# Samuel Calvert
 
-A modern, minimalist personal website built with HTML and CSS.
+## 👋 Hi there! I'm Sam
 
-## Overview
+I'm a Computer Engineering professional specializing in infrastructure automation, networking, and systems troubleshooting.
 
-This repository contains the source code for my personal website, featuring a clean design with links to my GitHub projects and resume. The site is hosted using GitHub Pages.
+![Profile Banner](https://img.shields.io/badge/Infrastructure-Specialist-blue)
+![Profile Banner](https://img.shields.io/badge/DevOps-Engineer-green)
 
-## Setup
+## 💼 Experience
 
-To view the website locally:
+Currently working as a **Technical Support Engineer** at **Haivision**, where I:
+- Identify and resolve deployment problems while effectively coordinating with cross-functional teams
+- Implement and maintain monitoring solutions to proactively address system issues
+- Troubleshoot complex network configurations and streaming media infrastructure
 
-1. Clone this repository
-2. Open `index.html` in your browser
+## 🚀 Projects
 
-To make changes:
+### Homelab Kubernetes Infrastructure
+- Designed and implemented multi-environment Kubernetes clusters running on Proxmox VMs
+- Created complete infrastructure-as-code solution using Terraform, Ansible, and GitOps methodologies
+- Implemented monitoring stacks with Prometheus/Grafana and self-hosted DNS solutions
 
-1. Edit the HTML and CSS files as needed
-2. Push changes to GitHub to automatically update the live site
+## 🌐 Personal Website
 
-## Visit
+Visit my personal website at [sfc.al](https://sfc.al)
 
-The live site is available at [sfc.al](https://sfc.al)
+## 📫 How to reach me
 
-## License
+- GitHub: [@sfcal](https://github.com/sfcal)
+- LinkedIn: [samuelcalvert](https://linkedin.com/in/samuelcalvert)
 
-[MIT License](LICENSE)
+<!-- keyboard go brrrr -->
