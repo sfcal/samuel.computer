@@ -28,6 +28,4 @@ Visit my personal website at [sfc.al](https://sfc.al)
 ## 📫 How to reach me
 
 - GitHub: [@sfcal](https://github.com/sfcal)
-- LinkedIn: [samuelcalvert](https://linkedin.com/in/samuelcalvert)
-
-<!-- keyboard go brrrr -->
+- LinkedIn: [samuelcalvert](https://www.linkedin.com/in/samuel-calvert-1a4765222/)
