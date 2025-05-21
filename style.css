@@ -1,5 +1,5 @@
 body{
-  background-color: #fdf6e3;
+  background-color: #f8f9fa;
 }
 
 .title{
@@ -10,32 +10,38 @@ body{
 
 .name{
   font-size:750%;
-  font-family: 'Dosis', cursive;
-  color: #268bd2;
+  font-family: 'Dosis', sans-serif;
+  color: #6c5ce7;
 }
 
 .links{
   display: flex;
   flex-direction: column;
-  height: 400px;
+  height: 300px;
 }
 
 .fas, .fab{
   font-size:350%;
   align-self: center;
   margin-right:25%;
-  color: #cb4b16;
+  color: #00b894;
 }
+
 .link{
   display: flex;
   flex-direction: row;
   text-decoration: none;
   justify-content: space-between;
-
+  transition: transform 0.3s ease;
 }
+
+.link:hover {
+  transform: translateX(15px);
+}
+
 .linktext{
   font-size:200%;
   margin-left: 25%;
   font-family: 'Dosis';
-  color: #657b83;
+  color: #2d3436;
 }
