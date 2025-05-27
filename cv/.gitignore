@@ -38,9 +38,6 @@
 *.ps
 *.eps
 
-# PDF output (uncomment if you want to track the final PDF)
-*.pdf
-
 # LaTeX temporary files
 *~
 *.backup
