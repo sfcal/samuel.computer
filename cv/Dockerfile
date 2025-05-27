@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /cv
 
 # Copy all CV files
-COPY cv/ ./
+COPY . ./
 
 # Create fonts directory if it doesn't exist
 RUN mkdir -p fonts

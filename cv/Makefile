@@ -15,9 +15,10 @@ build:
 run:
 	@mkdir -p output
 	docker run --rm \
-		-v $(PWD)/cv:/cv \
+		-v $(PWD):/cv \
 		-v $(PWD)/output:/cv/output \
 		latex-cv
+	cp output/cv.pdf cv.pdf
 
 # Clean output
 clean:
