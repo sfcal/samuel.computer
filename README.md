@@ -14,18 +14,6 @@ Currently working as a **Technical Support Engineer** at **Haivision**, where I:
 - Implement and maintain monitoring solutions to proactively address system issues
 - Troubleshoot complex network configurations and streaming media infrastructure
 
-## 🚀 Projects
-
-### Homelab Kubernetes Infrastructure
-- Designed and implemented multi-environment Kubernetes clusters running on Proxmox VMs
-- Created complete infrastructure-as-code solution using Terraform, Ansible, and GitOps methodologies
-- Implemented monitoring stacks with Prometheus/Grafana and self-hosted DNS solutions
-
 ## 🌐 Personal Website
 
 Visit my personal website at [sfc.al](https://sfc.al)
-
-## 📫 How to reach me
-
-- GitHub: [@sfcal](https://github.com/sfcal)
-- LinkedIn: [samuelcalvert](https://www.linkedin.com/in/samuel-calvert-1a4765222/)
