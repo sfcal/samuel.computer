@@ -40,7 +40,7 @@ export const Navbar = () => {
             </Link>
             
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-8 ml-auto">
               {isHomePage ? (
                 <>
                   <a href="#projects" className={`transition-colors ${activeSection === 'projects' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}`}>
@@ -52,6 +52,9 @@ export const Navbar = () => {
                   <a href="#contact" className={`transition-colors ${activeSection === 'contact' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}`}>
                     Contact
                   </a>
+                  <a href="/cv/cv.pdf" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    CV
+                  </a>
                 </>
               ) : (
                 <>
@@ -61,6 +64,9 @@ export const Navbar = () => {
                   <Link to="/blog" className={`transition-colors ${location.pathname.startsWith('/blog') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}`}>
                     Blog
                   </Link>
+                  <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    CV
+                  </a>
                 </>
               )}
             </div>
@@ -91,6 +97,9 @@ export const Navbar = () => {
                     <a href="#contact" onClick={() => setMobileMenu(false)} className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                       Contact
                     </a>
+                    <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenu(false)} className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                      CV
+                    </a>
                   </>
                 ) : (
                   <>
@@ -100,6 +109,9 @@ export const Navbar = () => {
                     <Link to="/blog" onClick={() => setMobileMenu(false)} className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                       Blog
                     </Link>
+                    <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenu(false)} className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                      CV
+                    </a>
                   </>
                 )}
               </div>
