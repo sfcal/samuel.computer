@@ -1,0 +1,63 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@layer base {
+  /* Scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-black/10 backdrop-blur-xl;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-indigo-500/50 rounded-[5px] hover:bg-indigo-500/70;
+  }
+  
+  /* Base styles */
+  body {
+    @apply font-inter text-gray-900 dark:text-gray-100 transition-colors duration-300;
+  }
+}
+
+@layer components {
+  /* Glassmorphism card */
+  .glass-card {
+    @apply bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl;
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent;
+  }
+  
+  /* Button base */
+  .btn-base {
+    @apply px-4 py-2 rounded-lg transition-all duration-200 hover:shadow-md;
+  }
+  
+  .btn-primary {
+    @apply btn-base bg-indigo-600 hover:bg-indigo-700 text-white;
+  }
+  
+  .btn-ghost {
+    @apply btn-base bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700;
+  }
+}
+
+@layer utilities {
+  /* Animation classes */
+  .animate-gradient {
+    animation: gradient-rotate 20s linear infinite;
+  }
+  
+  @keyframes gradient-rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
