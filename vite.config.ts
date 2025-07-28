@@ -2,13 +2,21 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      buffer: 'buffer',
+      process: 'process/browser',
     },
+  },
+  define: {
+    global: 'globalThis',
+    'process.env': {},
+  },
+  optimizeDeps: {
+    include: ['buffer', 'process']
   },
   server: {
     port: 3000,
@@ -17,7 +25,6 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
-    // Reduce chunk size warnings
     chunkSizeWarningLimit: 1000,
   },
 });

@@ -1,3 +1,4 @@
+import '../buffer-polyfill';
 import matter from 'gray-matter';
 
 export interface BlogPost {
@@ -9,8 +10,15 @@ export interface BlogPost {
   content: string;
 }
 
-function parseMarkdownFile(filePath: string, content: string): BlogPost {
-  const { data, content: markdownContent } = matter(content);
+// Load all markdown files from content/blog directory
+const modules = import.meta.glob('../content/blog/*.{md,mdx}', { 
+  eager: true, 
+  query: '?raw', 
+  import: 'default' 
+});
+
+export const blogPosts: BlogPost[] = Object.entries(modules).map(([filePath, content]) => {
+  const { data, content: markdownContent } = matter(content as string);
   const slug = filePath.split('/').pop()?.replace(/\.(md|mdx)$/, '') || '';
   
   return {
@@ -21,18 +29,7 @@ function parseMarkdownFile(filePath: string, content: string): BlogPost {
     tags: data.tags || [],
     content: markdownContent
   };
-}
-
-// Load all markdown files from content/blog directory
-const modules = import.meta.glob('../content/blog/*.{md,mdx}', { 
-  eager: true, 
-  query: '?raw', 
-  import: 'default' 
 });
-
-export const blogPosts: BlogPost[] = Object.entries(modules).map(([filePath, content]) => 
-  parseMarkdownFile(filePath, content as string)
-);
 
 export function getAllPosts(): BlogPost[] {
   return blogPosts.sort((a, b) => 
