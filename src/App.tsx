@@ -20,13 +20,17 @@ function App() {
         <AppProvider>
           <Router>
             <SEO />
-            <div className="min-h-screen">
+            <div className="min-h-screen flex flex-col">
               <BackgroundGradient />
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:slug" element={<BlogPost />} />
-              </Routes>
+              <Navbar />
+              <main className="flex-1">
+                <Routes>
+                  <Route path="/" element={<HomeContent />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/:slug" element={<BlogPost />} />
+                </Routes>
+              </main>
+              <Footer />
               <ScrollToTop />
             </div>
           </Router>
@@ -36,15 +40,11 @@ function App() {
   );
 }
 
-const HomePage = () => (
+const HomeContent = () => (
   <>
-    <Navbar />
-    <main>
-      <Hero />
-      <Projects />
-      <Contact />
-    </main>
-    <Footer />
+    <Hero />
+    <Projects />
+    <Contact />
   </>
 );
 
