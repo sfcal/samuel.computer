@@ -7,7 +7,7 @@ export const Hero = () => {
         <div className="max-w-3xl">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
             <span className="block text-3xl md:text-4xl mb-4 font-normal">
-              Hey👋, I&apos;m Samuel Calvert
+              👋 Hi there! I&apos;m Samuel Calvert
             </span>
             <span className="block">3+ years building </span>
             <span className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
