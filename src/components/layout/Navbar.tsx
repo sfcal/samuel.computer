@@ -11,7 +11,7 @@ export const Navbar = () => {
     if (!isHomePage) return;
 
     const updateActiveSection = () => {
-      const sections = ['hero', 'projects', 'contact'];
+      const sections = ['hero', 'projects'];
       const scrollPosition = window.scrollY + 100;
       
       for (const section of sections) {
@@ -49,10 +49,7 @@ export const Navbar = () => {
                   <Link to="/blog" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                     Blog
                   </Link>
-                  <a href="#contact" className={`transition-colors ${activeSection === 'contact' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}`}>
-                    Contact
-                  </a>
-                  <a href="/cv/cv.pdf" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                  <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                     CV
                   </a>
                 </>
@@ -94,9 +91,6 @@ export const Navbar = () => {
                     <Link to="/blog" onClick={() => setMobileMenu(false)} className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                       Blog
                     </Link>
-                    <a href="#contact" onClick={() => setMobileMenu(false)} className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-                      Contact
-                    </a>
                     <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenu(false)} className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                       CV
                     </a>
