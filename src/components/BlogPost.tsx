@@ -33,7 +33,7 @@ const BlogPost: React.FC = () => {
   }
 
   return (
-    <article className="container mx-auto px-4 py-16 max-w-4xl">
+    <article className="container mx-auto px-4 pt-24 pb-16 max-w-4xl">
       <div className="mb-8">
         <Link
           to="/blog"
