@@ -2,7 +2,7 @@ import { ChevronDown } from 'lucide-react';
 
 export const Hero = () => {
   return (
-    <section id="hero" className="min-h-screen flex items-center px-4 pt-20">
+    <section id="hero" className="min-h-screen flex items-center px-4 pt-0 md:pt-20 relative">
       <div className="max-w-7xl mx-auto w-full">
         <div className="max-w-4xl">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
@@ -16,7 +16,7 @@ export const Hero = () => {
             <span className="block">and backend systems.</span>
           </h1>
           
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-12">
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 md:mb-12">
             Support Engineer{' '}
             <a 
               href="https://haivision.com" 
@@ -28,7 +28,7 @@ export const Hero = () => {
             </a>
           </p>
           
-          <div className="flex items-center gap-6 mb-12">
+          <div className="flex items-center gap-6 mb-4 md:mb-12">
             <SocialLinks />
           </div>
         </div>
@@ -64,13 +64,13 @@ const SocialLinks = () => {
 };
 
 const ScrollIndicator = () => (
-  <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+  <div className="absolute bottom-4 md:bottom-8 left-0 right-0 flex justify-center animate-bounce">
     <a 
       href="#projects" 
       className="flex flex-col items-center text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
     >
-      <span className="text-sm font-medium mb-2">Featured projects</span>
-      <ChevronDown className="animate-bounce" />
+      <span className="text-sm font-medium mb-2 text-center">Featured projects</span>
+      <ChevronDown />
     </a>
   </div>
 );
