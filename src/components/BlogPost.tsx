@@ -34,15 +34,6 @@ const BlogPost: React.FC = () => {
 
   return (
     <article className="container mx-auto px-4 pt-24 pb-16 max-w-4xl">
-      <div className="mb-8">
-        <Link
-          to="/blog"
-          className="inline-flex items-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium mb-8 group"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-          Back to Blog
-        </Link>
-      </div>
 
       <header className="mb-12">
         <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400 mb-4">

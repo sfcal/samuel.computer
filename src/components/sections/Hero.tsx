@@ -4,7 +4,7 @@ export const Hero = () => {
   return (
     <section id="hero" className="min-h-screen flex items-center px-4 pt-20">
       <div className="max-w-7xl mx-auto w-full">
-        <div className="max-w-3xl">
+        <div className="max-w-4xl">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
             <span className="block text-3xl md:text-4xl mb-4 font-normal">
               👋 Hi there! I&apos;m Samuel Calvert
