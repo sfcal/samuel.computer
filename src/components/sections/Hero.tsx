@@ -5,7 +5,7 @@ export const Hero = () => {
   const [hideIndicator, setHideIndicator] = useState(false);
 
   useEffect(() => {
-    let scrollTimeout: number;
+    let scrollTimeout: ReturnType<typeof setTimeout>;
     
     const handleScroll = (e: Event) => {
       const target = e.target as HTMLElement;
