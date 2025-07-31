@@ -24,15 +24,16 @@ export const projects: Project[] = [
     icon: 'cube'
   },
   {
-    id: 'network-ids',
-    title: 'AI-Powered Network IDS',
-    description: 'Developed network intrusion detection systems using GAN-based neural networks for anomaly detection.',
+    id: 'gba-resume',
+    title: 'GBA Resume',
+    description: 'Game Boy Advance homebrew resume written in C, showcasing low-level programming skills.',
     features: [
-      'GAN-based anomaly detection',
-      'GNS3 virtual network simulations',
-      'Containerized deployment solution'
+      'Custom graphics and animations',
+      'Interactive menu system',
+      'Hardware-optimized rendering'
     ],
-    technologies: ['Python', 'TensorFlow', 'Docker', 'GNS3'],
-    icon: 'shield'
+    technologies: ['C', 'Assembly', 'GBA SDK', 'DevkitPro'],
+    githubUrl: 'https://github.com/sfcal/gba-resume',
+    icon: 'gamepad'
   }
 ];

@@ -18,7 +18,7 @@ run:
 		-v $(PWD):/cv \
 		-v $(PWD)/output:/cv/output \
 		latex-cv
-	cp output/cv.pdf cv.pdf
+	cp output/cv.pdf ../public/cv.pdf
 
 # Clean output
 clean:

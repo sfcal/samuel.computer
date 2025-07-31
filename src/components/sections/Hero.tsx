@@ -56,7 +56,7 @@ const SocialLinks = () => {
           rel={link.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
           className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
         >
-          <i className={`fab ${link.icon} text-xl`} />
+          <i className={`${link.icon === 'fa-envelope' ? 'fas' : 'fab'} ${link.icon} text-xl`} />
         </a>
       ))}
     </>
