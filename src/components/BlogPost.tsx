@@ -1,6 +1,8 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { Calendar, ArrowLeft, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { getPostBySlug } from '../data/blog';
@@ -65,16 +67,22 @@ const BlogPost: React.FC = () => {
       </header>
 
       <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50 shadow-xl">
-        <div className="prose prose-lg prose-gray dark:prose-invert max-w-none 
+        <div className="prose prose-gray dark:prose-invert max-w-none 
           prose-headings:text-gray-900 dark:prose-headings:text-white 
           prose-a:text-indigo-600 dark:prose-a:text-indigo-400 
           prose-code:text-indigo-600 dark:prose-code:text-indigo-400 
           prose-code:bg-gray-100 dark:prose-code:bg-gray-800 
           prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+          prose-code:text-sm
           prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900
-          prose-pre:border prose-pre:border-gray-200 dark:prose-pre:border-gray-700"
+          prose-pre:border prose-pre:border-gray-200 dark:prose-pre:border-gray-700
+          prose-pre:text-sm prose-pre:leading-relaxed
+          prose-ul:list-disc prose-ul:pl-6
+          prose-li:text-gray-700 dark:prose-li:text-gray-300"
         >
           <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
             components={{
               code({ node, inline, className, children, ...props }: any) {
                 const match = /language-(\w+)/.exec(className || '');
@@ -83,6 +91,11 @@ const BlogPost: React.FC = () => {
                     style={oneDark as any}
                     language={match[1]}
                     PreTag="div"
+                    customStyle={{
+                      fontSize: '0.875rem',
+                      padding: '0.75rem',
+                      margin: '0.5rem 0'
+                    }}
                     {...props}
                   >
                     {String(children).replace(/\n$/, '')}
@@ -91,16 +104,6 @@ const BlogPost: React.FC = () => {
                   <code className={className} {...props}>
                     {children}
                   </code>
-                );
-              },
-              // Custom image renderer for responsive images
-              img({ node, ...props }) {
-                return (
-                  <img 
-                    {...props} 
-                    className="rounded-lg shadow-md" 
-                    loading="lazy"
-                  />
                 );
               },
               // Custom link renderer to open external links in new tab
@@ -116,7 +119,16 @@ const BlogPost: React.FC = () => {
                     {children}
                   </a>
                 );
-              }
+              },
+              // Explicitly render headings
+              h1: ({ children }) => <h1 className="text-4xl font-bold mt-8 mb-4">{children}</h1>,
+              h2: ({ children }) => <h2 className="text-3xl font-bold mt-6 mb-3">{children}</h2>,
+              h3: ({ children }) => <h3 className="text-2xl font-bold mt-4 mb-2">{children}</h3>,
+              h4: ({ children }) => <h4 className="text-xl font-bold mt-3 mb-2">{children}</h4>,
+              h5: ({ children }) => <h5 className="text-lg font-bold mt-2 mb-1">{children}</h5>,
+              h6: ({ children }) => <h6 className="text-base font-bold mt-2 mb-1">{children}</h6>,
+              ul: ({ children }) => <ul className="list-disc pl-6 my-4 space-y-2">{children}</ul>,
+              li: ({ children }) => <li className="text-gray-700 dark:text-gray-300">{children}</li>
             }}
           >
             {post.content}

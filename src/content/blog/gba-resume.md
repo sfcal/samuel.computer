@@ -9,15 +9,17 @@ tags: ["gamedev", "hardware", "creative", "job-hunting"]
 
 ## I implemented my resume as a playable Gameboy Advance game cartridge and shipped it off to prospective company recruiters.
 
-![GBA Resume Cartridge](/assets/blog/gba-resume-main.png)
+<img src="/assets/blog/gba-resume-main.png" alt="GBA Resume Cartridge" style="max-width: 400px; margin: 0 auto; display: block;" />
 
-### Play it on the web @ [https://gba.sfc.al](https://gba.sfc.al)
+<div style="text-align: center; margin: 1rem 0;">
+  <h3 style="display: inline-block; margin: 0;">Play it on the web @ <a href="https://gba.sfc.al" style="color: #3b82f6;">https://gba.sfc.al</a></h3>
+</div>
 
 I’ve personally found it quite difficult looking for a new job in NYC this summer. On one end Linkedin and other job sites have pushed the cost of advertising openings to nearly zero. On the other end, AI and “Easy Apply” have made it simple to tailor your application to as many jobs as possible and push out slop. The consequences of these competing forces lead to heavy handed application filters and automated black box rejections.
 
-![LinkedIn Job Stats](/assets/blog/linkedin-stats-1.png)
+<img src="/assets/blog/linkedin-stats-1.png" alt="LinkedIn Job Stats" style="max-width: 100%; margin: 0 auto; display: block;" />
 
-![LinkedIn Job Stats 2](/assets/blog/linkedin-stats-2.png)
+<img src="/assets/blog/linkedin-stats-2.png" alt="LinkedIn Job Stats 2" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 A more human approach is needed.
 
@@ -25,7 +27,7 @@ luckily, a move away from online and into the world isn’t too difficult in NYC
 
 Still, I wanted to stand out more while offering a tactile memento. And so, out of childhood love and fun, the Gameboy Advance Resume.
 
-![GBA Game Screenshot](/assets/blog/gba-game-screenshot.png)
+<img src="/assets/blog/gba-game-screenshot.png" alt="GBA Game Screenshot" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 From the beginning, this was always meant to be a small quick project, I’m not interested in perusing game development or understanding the inner workings of a 20 y/o game console. Butano was perfect for this, it offers a high level C++ library with many examples to draw from. 
 
@@ -33,11 +35,11 @@ While researching this project I ran across a creator who put Tenet on 5 GBA car
 
 I reached out on the gbadev discord to see if anyone had done something similar. 
 
-![Discord Conversation](/assets/blog/discord-conversation.png)
+<img src="/assets/blog/discord-conversation.png" alt="Discord Conversation" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 And in the most chopped way imaginable, you can in fact change a background frame every second to accomplish exactly this. 
 
-```jsx
+```cpp
 namespace video
     {
         constexpr const bn::regular_bg_item* frames[] = {
@@ -78,18 +80,18 @@ Butano is a bit finicky with importing assets and need exactly uncompressed .bmp
 
 **Processing Pipeline**:
 
-1. BGR→RGB conversion (OpenCV to PIL convention)
-2. 10% contrast boost to improve quantization results
-3. LANCZOS downsampling to 240×160 (GBA resolution)
-4. Center in 256×256 canvas
-5. Ordered dithering to 16-color palette
+- BGR→RGB conversion (OpenCV to PIL convention)
+- 10% contrast boost to improve quantization results
+- LANCZOS downsampling to 240×160 (GBA resolution)
+- Center in 256×256 canvas
+- Ordered dithering to 16-color palette
 
 **Output**: Each frame generates:
 
 - 4-bit BMP (16 colors)
 - JSON metadata enabling Butano's tile deduplication
 
-```jsx
+```python
 # Open video with OpenCV
     cap = cv2.VideoCapture(INPUT_VIDEO)
     
@@ -187,7 +189,7 @@ Butano is a bit finicky with importing assets and need exactly uncompressed .bmp
 
 Claude did a great job vibing out the right color pallet for my image.
 
-![Claude Colors](/assets/blog/color-palette.png)
+<img src="/assets/blog/color-palette.png" alt="Claude Colors" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 After showing off the basic prototype to the group at [sideprojectsaturday.com](http://sideprojectsaturday.com), the biggest criticism was that if I was trying to get my project in front of as many eyeballs as possible, this needed more than just a physical implementation. As the name suggests, GBAjs2 is a Gameboy Advance emulator written entirely in JS. While not perfectly compatible with all games and some issues with Firefox, Andy’s implementation worked perfectly with my rom. Only minor changes were needed to autoload my rom on startup. Thanks Andy!
 
@@ -207,7 +209,7 @@ The most expensive part of this project was going to be acquiring the Gameboys. 
 
 Gameboy Advances aren’t region locked, what if I went directly to the source? Searching Japanese auction sites, I was able to find hundreds of listings for aging GBAs in okay condition. Even better, many of them were being sold in lots. Using buyee.jp, I was able to bid on these auctions and secure 10x GBAs for $30 each after import fees.
 
-![CleanShot 2025-07-30 at 12.11.16.png](/assets/blog/buyee-auction.png)
+<img src="/assets/blog/buyee-auction.png" alt="CleanShot 2025-07-30 at 12.11.16.png" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 With the consoles secured and rom file in hand, I now needed cartridges and a way to write them. 
 
@@ -215,14 +217,14 @@ The GBxCart RW was the perfect option for writing ROMs with support for a broad 
 
 Even with these resources I found it difficult to determine what cartridge I would be getting from the Aliexpress vendors. Eventually I decided to roll the dice on some clone Mother 3 carts. 
 
-![CleanShot 2025-07-30 at 12.36.30.png](/assets/blog/mother3-carts.png)
+<img src="/assets/blog/mother3-carts.png" alt="CleanShot 2025-07-30 at 12.36.30.png" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 This ended up working out! After some custom labels designed by my friend Jess, I had all the pieces.
 
-![CleanShot 2025-07-30 at 12.36.30.png](/assets/blog/final-flashing.png)
+<img src="/assets/blog/final-flashing.png" alt="CleanShot 2025-07-30 at 12.36.30.png" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 A 3D printed insert to hold and display both items finishes off the project.
 
-![CleanShot 2025-07-30 at 12.36.30.png](/assets/blog/final-product.png)
+<img src="/assets/blog/final-product.png" alt="CleanShot 2025-07-30 at 12.36.30.png" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 I’ve shipped off 5 of these packages to prospective companies with the hopes of getting a foot in the door. Regardless of the success in this, I’ve had fun putting together this project and am proud of what I’ve made.
