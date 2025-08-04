@@ -4,40 +4,36 @@ date: "2025-07-30"
 excerpt: "How I created a playable GBA game as my resume and shipped it to recruiters"
 tags: ["gamedev", "hardware", "creative", "job-hunting"]
 ---
-
-# GBA Resume
-
-## I implemented my resume as a playable Gameboy Advance game cartridge and shipped it off to prospective company recruiters.
-
 <img src="/assets/blog/gba-resume-main.png" alt="GBA Resume Cartridge" style="max-width: 400px; margin: 0 auto; display: block;" />
 
 <div style="text-align: center; margin: 1rem 0;">
   <h3 style="display: inline-block; margin: 0;">Play it on the web @ <a href="https://gba.sfc.al" style="color: #3b82f6;">https://gba.sfc.al</a></h3>
 </div>
 
-I’ve personally found it quite difficult looking for a new job in NYC this summer. On one end Linkedin and other job sites have pushed the cost of advertising openings to nearly zero. On the other end, AI and “Easy Apply” have made it simple to tailor your application to as many jobs as possible and push out slop. The consequences of these competing forces lead to heavy handed application filters and automated black box rejections.
+I’ve personally found it quite difficult looking for a new job in NYC this summer. On one end Linkedin and other job sites have pushed the cost of advertising openings to nearly zero. On the other end, AI and “Easy Apply” have made it simple to tailor your application to as many jobs as possible and push out slop. The consequences of these competing forces lead to heavy handed application filters and automated black box rejections.<br><br/>
 
 <img src="/assets/blog/linkedin-stats-1.png" alt="LinkedIn Job Stats" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 <img src="/assets/blog/linkedin-stats-2.png" alt="LinkedIn Job Stats 2" style="max-width: 100%; margin: 0 auto; display: block;" />
+<br><br/>
 
-A more human approach is needed.
+A more human approach is needed.<br><br/>
 
-luckily, a move away from online and into the world isn’t too difficult in NYC. Meetups are regularly held during the week and offer deeper connection and instant feedback from similar professionals. (S/o rust meetup NYC)
+luckily, a move away from online and into the world isn’t too difficult in NYC. Meetups are regularly held during the week and offer deeper connection and instant feedback from similar professionals. (S/o rust meetup NYC)<br><br/>
 
-Still, I wanted to stand out more while offering a tactile memento. And so, out of childhood love and fun, the Gameboy Advance Resume.
+Still, I wanted to stand out more while offering a tactile memento. And so, out of childhood love and fun, the Gameboy Advance Resume.<br><br/>
 
 <img src="/assets/blog/gba-game-screenshot.png" alt="GBA Game Screenshot" style="max-width: 100%; margin: 0 auto; display: block;" />
 
-From the beginning, this was always meant to be a small quick project, I’m not interested in perusing game development or understanding the inner workings of a 20 y/o game console. Butano was perfect for this, it offers a high level C++ library with many examples to draw from. 
+From the beginning, this was always meant to be a small quick project, I’m not interested in perusing game development or understanding the inner workings of a 20 y/o game console. Butano was perfect for this, it offers a high level C++ library with many examples to draw from.<br><br/>
 
-While researching this project I ran across a creator who put Tenet on 5 GBA cartridges using the project avi2gba. Unfortunately this project looks to have been abandoned over a decade ago, however, I really wanted to incorporate a small video into the startup of my game. 
+While researching this project I ran across a creator who put Tenet on 5 GBA cartridges using the project avi2gba. Unfortunately this project looks to have been abandoned over a decade ago, however, I really wanted to incorporate a small video into the startup of my game.<br><br/>
 
-I reached out on the gbadev discord to see if anyone had done something similar. 
+I reached out on the gbadev discord to see if anyone had done something similar.<br><br/>
 
 <img src="/assets/blog/discord-conversation.png" alt="Discord Conversation" style="max-width: 100%; margin: 0 auto; display: block;" />
 
-And in the most chopped way imaginable, you can in fact change a background frame every second to accomplish exactly this. 
+And in the most chopped way imaginable, you can in fact change a background frame every second to accomplish exactly this.<br><br/> 
 
 ```cpp
 namespace video
@@ -187,43 +183,48 @@ Butano is a bit finicky with importing assets and need exactly uncompressed .bmp
     cap.release()
 ```
 
-Claude did a great job vibing out the right color pallet for my image.
 
 <img src="/assets/blog/color-palette.png" alt="Claude Colors" style="max-width: 100%; margin: 0 auto; display: block;" />
+<div style="text-align: center;">Claude did a great job vibing out the right color pallet for my image.</div><br><br/>
 
-After showing off the basic prototype to the group at [sideprojectsaturday.com](http://sideprojectsaturday.com), the biggest criticism was that if I was trying to get my project in front of as many eyeballs as possible, this needed more than just a physical implementation. As the name suggests, GBAjs2 is a Gameboy Advance emulator written entirely in JS. While not perfectly compatible with all games and some issues with Firefox, Andy’s implementation worked perfectly with my rom. Only minor changes were needed to autoload my rom on startup. Thanks Andy!
+
+After showing off the basic prototype to the group at <a href="http://sideprojectsaturday.com" style="color: #3b82f6;">sideprojectsaturday.com</a>, the biggest criticism was that if I was trying to get my project in front of as many eyeballs as possible, this needed more than just a physical implementation. As the name suggests, GBAjs2 is a Gameboy Advance emulator written entirely in JS. While not perfectly compatible with all games and some issues with Firefox, Andy’s implementation worked perfectly with my rom. Only minor changes were needed to autoload my rom on startup. Thanks Andy!
 
 ## Hardware
 
 The real wow factor of this whole project is being able to play this on genuine hardware. To accomplish this goal I needed a few things. 
 
-Some cheap Gameboy Advances
+- Some cheap Gameboy Advances
+- Rewriteable cartridges
+- custom labels
+- packaging
 
-Rewriteable cartridges
+The most expensive part of this project was going to be acquiring the Gameboys. With most Ebay listings hovering between $60 - $100, this was a non starter if I was going to risk them never being returned. I did see references to knockoff Gameboys that played actual cartridges ~5 years ago, but it appears that production has stopped and they no longer fetch a reasonable price.<br><br/>
+ 
 
-custom labels
+Gameboy Advances aren’t region locked, what if I went directly to the source? Searching Japanese auction sites, I was able to find hundreds of listings for aging GBAs in okay condition. Even better, many of them were being sold in lots. Using buyee.jp, I was able to bid on these auctions and secure 10x GBAs for $30 each after import fees.<br><br/>
 
-packaging
-
-The most expensive part of this project was going to be acquiring the Gameboys. With most Ebay listings hovering between $60 - $100, this was a non starter if I was going to risk them never being returned. I did see references to knockoff Gameboys that played actual cartridges ~5 years ago, but it appears that production has stopped and they no longer fetch a reasonable price. 
-
-Gameboy Advances aren’t region locked, what if I went directly to the source? Searching Japanese auction sites, I was able to find hundreds of listings for aging GBAs in okay condition. Even better, many of them were being sold in lots. Using buyee.jp, I was able to bid on these auctions and secure 10x GBAs for $30 each after import fees.
 
 <img src="/assets/blog/buyee-auction.png" alt="CleanShot 2025-07-30 at 12.11.16.png" style="max-width: 100%; margin: 0 auto; display: block;" />
 
-With the consoles secured and rom file in hand, I now needed cartridges and a way to write them. 
+With the consoles secured and rom file in hand, I now needed cartridges and a way to write them.<br><br/>
+ 
 
-The GBxCart RW was the perfect option for writing ROMs with support for a broad range of after market carts and a database available of known carts ([https://flashcartdb.com/](https://flashcartdb.com/)). 
+The GBxCart RW was the perfect option for writing ROMs with support for a broad range of after market carts and a database available of known carts ([https://flashcartdb.com/](https://flashcartdb.com/)).<br><br/>
+ 
 
-Even with these resources I found it difficult to determine what cartridge I would be getting from the Aliexpress vendors. Eventually I decided to roll the dice on some clone Mother 3 carts. 
+Even with these resources I found it difficult to determine what cartridge I would be getting from the Aliexpress vendors. Eventually I decided to roll the dice on some clone Mother 3 carts. <br><br/>
+
 
 <img src="/assets/blog/mother3-carts.png" alt="CleanShot 2025-07-30 at 12.36.30.png" style="max-width: 100%; margin: 0 auto; display: block;" />
 
-This ended up working out! After some custom labels designed by my friend Jess, I had all the pieces.
+This ended up working out! After some custom labels designed by my friend Jess, I had all the pieces.<br><br/>
+
 
 <img src="/assets/blog/final-flashing.png" alt="CleanShot 2025-07-30 at 12.36.30.png" style="max-width: 100%; margin: 0 auto; display: block;" />
 
-A 3D printed insert to hold and display both items finishes off the project.
+A 3D printed insert to hold and display both items finishes off the project.<br><br/>
+
 
 <img src="/assets/blog/final-product.png" alt="CleanShot 2025-07-30 at 12.36.30.png" style="max-width: 100%; margin: 0 auto; display: block;" />
 
