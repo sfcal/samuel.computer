@@ -4,7 +4,7 @@ date: "2025-07-30"
 excerpt: "How I created a playable GBA game as my resume and shipped it to recruiters"
 tags: ["gamedev", "hardware", "creative", "job-hunting"]
 ---
-<img src="/assets/blog/gba-resume-main.png" alt="GBA Resume Cartridge" style="max-width: 400px; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume-main.png" alt="GBA Resume Cartridge" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 <div style="text-align: center; margin: 1rem 0;">
   <h3 style="display: inline-block; margin: 0;">Play it on the web @ <a href="https://gba.sfc.al" style="color: #3b82f6;">https://gba.sfc.al</a></h3>
