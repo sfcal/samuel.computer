@@ -7,7 +7,7 @@ tags: ["gamedev", "hardware", "creative", "job-hunting"]
 <img src="/assets/blog/gba-resume-main.png" alt="GBA Resume Cartridge" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 <div style="text-align: center; margin: 1rem 0;">
-  <h3 style="display: inline-block; margin: 0;">Play it on the web @ <a href="https://gba.sfc.al" style="color: #3b82f6;">https://gba.sfc.al</a></h3>
+  <h3 style="display: inline-block; margin: 0;">Play it on the web @ <a href="https://gba.samuel.computer" style="color: #3b82f6;">https://gba.samuel.computer</a></h3>
 </div>
 
 I’ve personally found it quite difficult looking for a new job in NYC this summer. On one end Linkedin and other job sites have pushed the cost of advertising openings to nearly zero. On the other end, AI and “Easy Apply” have made it simple to tailor your application to as many jobs as possible and push out slop. The consequences of these competing forces lead to heavy handed application filters and automated black box rejections.<br><br/>
@@ -86,6 +86,8 @@ Butano is a bit finicky with importing assets and need exactly uncompressed .bmp
 
 - 4-bit BMP (16 colors)
 - JSON metadata enabling Butano's tile deduplication
+
+<img src="/assets/blog/processing_pipeline.gif" alt="Processing Pipeline" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 ```python
 # Open video with OpenCV
