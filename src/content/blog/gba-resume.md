@@ -4,7 +4,7 @@ date: "2025-07-30"
 excerpt: "How I created a playable GBA game as my resume and shipped it to recruiters"
 tags: ["gamedev", "hardware", "creative", "job-hunting"]
 ---
-<img src="/assets/blog/gba-resume-main.png" alt="GBA Resume Cartridge" style="max-width: 50%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/gba-resume-main.png" alt="Resume cartridge" style="max-width: 50%; margin: 0 auto; display: block;" />
 
 <div style="text-align: center; margin: 1rem 0;">
   <h3 style="display: inline-block; margin: 0;">Play it on the web @ <a href="https://gba.samuel.computer" style="color: #3b82f6;">gba.samuel.computer</a></h3>
@@ -12,9 +12,9 @@ tags: ["gamedev", "hardware", "creative", "job-hunting"]
 
 I’ve personally found it quite difficult looking for a new job in NYC this summer. On one end Linkedin and other job sites have pushed the cost of advertising openings to nearly zero. On the other end, AI and “Easy Apply” have made it simple to tailor your application to as many jobs as possible and push out slop. The consequences of these competing forces lead to heavy handed application filters and automated black box rejections.<br><br/>
 
-<img src="/assets/blog/linkedin-stats-1.png" alt="LinkedIn Job Stats" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/linkedin-stats-1.png" alt="520 applicants" style="max-width: 100%; margin: 0 auto; display: block;" />
 
-<img src="/assets/blog/linkedin-stats-2.png" alt="LinkedIn Job Stats 2" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/linkedin-stats-2.png" alt="Rejection message" style="max-width: 100%; margin: 0 auto; display: block;" />
 <br><br/>
 
 A more human approach is needed.<br><br/>
@@ -23,7 +23,7 @@ luckily, a move away from online and into the world isn’t too difficult in NYC
 
 Still, I wanted to stand out more while offering a tactile memento. And so, out of childhood love and fun, the Gameboy Advance Resume.<br><br/>
 
-<img src="/assets/blog/start.png" alt="GBA Game Screenshot" style="max-width: 50%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/start.png" alt="Start screen" style="max-width: 50%; margin: 0 auto; display: block;" />
 
 From the beginning, this was always meant to be a small quick project, I’m not interested in perusing game development or understanding the inner workings of a 20 y/o game console. Butano was perfect for this, it offers a high level C++ library with many examples to draw from.<br><br/>
 
@@ -31,7 +31,7 @@ While researching this project I ran across a creator who put Tenet on 5 GBA car
 
 I reached out on the gbadev discord to see if anyone had done something similar.<br><br/>
 
-<img src="/assets/blog/discord-conversation.png" alt="Discord Conversation" style="max-width: 70%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/discord-conversation.png" alt="Discord chat" style="max-width: 70%; margin: 0 auto; display: block;" />
 
 And in the most chopped way imaginable, you can in fact change a background frame every second to accomplish exactly this.<br><br/> 
 
@@ -87,7 +87,7 @@ Butano is a bit finicky with importing assets and need exactly uncompressed .bmp
 - 4-bit BMP (16 colors)
 - JSON metadata enabling Butano's tile deduplication
 
-<img src="/assets/blog/processing_pipeline.gif" alt="Processing Pipeline" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/processing_pipeline.gif" alt="Video processing" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 ```python
 # Open video with OpenCV
@@ -186,7 +186,7 @@ Butano is a bit finicky with importing assets and need exactly uncompressed .bmp
 ```
 
 
-<img src="/assets/blog/color-palette.png" alt="Claude Colors" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/color-palette.png" alt="Color palette code" style="max-width: 100%; margin: 0 auto; display: block;" />
 <div style="text-align: center;">Claude did a great job vibing out the right color pallet for my image.</div><br><br/>
 
 
@@ -207,7 +207,7 @@ The most expensive part of this project was going to be acquiring the Gameboys. 
 Gameboy Advances aren’t region locked, what if I went directly to the source? Searching Japanese auction sites, I was able to find hundreds of listings for aging GBAs in okay condition. Even better, many of them were being sold in lots. Using buyee.jp, I was able to bid on these auctions and secure 10x GBAs for $30 each after import fees.<br><br/>
 
 
-<img src="/assets/blog/buyee-auction.png" alt="CleanShot 2025-07-30 at 12.11.16.png" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/buyee-auction.png" alt="GBA auction" style="max-width: 100%; margin: 0 auto; display: block;" />
 
 With the consoles secured and rom file in hand, I now needed cartridges and a way to write them.<br><br/>
  
@@ -218,16 +218,19 @@ The GBxCart RW was the perfect option for writing ROMs with support for a broad 
 Even with these resources I found it difficult to determine what cartridge I would be getting from the Aliexpress vendors. Eventually I decided to roll the dice on some clone Mother 3 carts. <br><br/>
 
 
-<img src="/assets/blog/mother3-carts.png" alt="CleanShot 2025-07-30 at 12.36.30.png" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/mother3-carts.png" alt="Mother 3 cartridges" style="max-width: 100%; margin: 0 auto; display: block;" />
 
-This ended up working out! After some custom labels designed by my friend Jess, I had all the pieces.<br><br/>
+This ended up working out! After some custom labels designed by my friend Jess, I had all the pieces. I added NFC tags inside each shell that link directly to the online emulator. 
+I've found that people love the experience of "plugging in" the game to the back of their phones. This retro feel with modern comforts is certainly my favorite part.<br><br/>
+
+<img src="/assets/blog/gba-resume/nfc.png" alt="Cartridge collection" style="max-width: 70%; margin: 0 auto; display: block;" />
 
 
-<img src="/assets/blog/final-flashing.png" alt="CleanShot 2025-07-30 at 12.36.30.png" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/flashing.png" alt="Flashing cartridges" style="max-width: 70%; margin: 0 auto; display: block;" />
 
 A 3D printed insert to hold and display both items finishes off the project.<br><br/>
 
 
-<img src="/assets/blog/final-product.png" alt="CleanShot 2025-07-30 at 12.36.30.png" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume/box.png" alt="Gift box packaging" style="max-width: 70%; margin: 0 auto; display: block;" />
 
 I’ve shipped off 5 of these packages to prospective companies with the hopes of getting a foot in the door. Regardless of the success in this, I’ve had fun putting together this project and am proud of what I’ve made.
