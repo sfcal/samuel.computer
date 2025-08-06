@@ -10,7 +10,7 @@ tags: ["gamedev", "hardware", "creative", "job-hunting"]
   <h3 style="display: inline-block; margin: 0;">Play it on the web @ <a href="https://gba.samuel.computer" style="color: #3b82f6;">gba.samuel.computer</a></h3>
 </div>
 
-I’ve personally found it quite difficult looking for a new job in NYC this summer. On one end Linkedin and other job sites have pushed the cost of advertising openings to nearly zero. On the other end, AI and “Easy Apply” have made it simple to tailor your application to as many jobs as possible and push out slop. The consequences of these competing forces lead to heavy handed application filters and automated black box rejections.<br><br/>
+I’ve found it quite difficult looking for a new job in NYC this summer. On one end Linkedin and other job sites have pushed the cost of advertising openings to nearly zero. On the other end, AI and “Easy Apply” have made it simple to tailor your application to as many jobs as possible and push out slop. The consequences of these competing forces lead to heavy handed application filters and automated black box rejections.<br><br/>
 
 <img src="/assets/blog/gba-resume/linkedin-stats-1.png" alt="520 applicants" style="max-width: 100%; margin: 0 auto; display: block;" />
 
