@@ -63,7 +63,7 @@ export const Projects = () => {
                 </div>
                 <div className="flex items-center text-sm">
                   <i className="fas fa-microchip text-blue-500 mr-2"></i>
-                  <span>Hardware-optimized rendering</span>
+                  <span>Product Design</span>
                 </div>
               </div>
               
