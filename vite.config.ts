@@ -1,9 +1,21 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { cp } from 'fs/promises';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'copy-404',
+      closeBundle: async () => {
+        await cp(
+          path.resolve(__dirname, 'dist/index.html'),
+          path.resolve(__dirname, 'dist/404.html')
+        )
+      }
+    }
+  ],
   base: '/',
   resolve: {
     alias: {
