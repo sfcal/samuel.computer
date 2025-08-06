@@ -4,7 +4,7 @@ date: "2025-07-30"
 excerpt: "How I created a playable GBA game as my resume and shipped it to recruiters"
 tags: ["gamedev", "hardware", "creative", "job-hunting"]
 ---
-<img src="/assets/blog/gba-resume-main.png" alt="GBA Resume Cartridge" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/gba-resume-main.png" alt="GBA Resume Cartridge" style="max-width: 50%; margin: 0 auto; display: block;" />
 
 <div style="text-align: center; margin: 1rem 0;">
   <h3 style="display: inline-block; margin: 0;">Play it on the web @ <a href="https://gba.samuel.computer" style="color: #3b82f6;">gba.samuel.computer</a></h3>
@@ -23,7 +23,7 @@ luckily, a move away from online and into the world isn’t too difficult in NYC
 
 Still, I wanted to stand out more while offering a tactile memento. And so, out of childhood love and fun, the Gameboy Advance Resume.<br><br/>
 
-<img src="/assets/blog/gba-game-screenshot.png" alt="GBA Game Screenshot" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/start.png" alt="GBA Game Screenshot" style="max-width: 50%; margin: 0 auto; display: block;" />
 
 From the beginning, this was always meant to be a small quick project, I’m not interested in perusing game development or understanding the inner workings of a 20 y/o game console. Butano was perfect for this, it offers a high level C++ library with many examples to draw from.<br><br/>
 
@@ -31,7 +31,7 @@ While researching this project I ran across a creator who put Tenet on 5 GBA car
 
 I reached out on the gbadev discord to see if anyone had done something similar.<br><br/>
 
-<img src="/assets/blog/discord-conversation.png" alt="Discord Conversation" style="max-width: 100%; margin: 0 auto; display: block;" />
+<img src="/assets/blog/discord-conversation.png" alt="Discord Conversation" style="max-width: 70%; margin: 0 auto; display: block;" />
 
 And in the most chopped way imaginable, you can in fact change a background frame every second to accomplish exactly this.<br><br/> 
 
