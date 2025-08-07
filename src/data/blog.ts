@@ -26,7 +26,7 @@ export const blogPosts: BlogPost[] = Object.entries(modules).map(([filePath, con
     title: data.title || '',
     date: data.date || '',
     excerpt: data.excerpt || '',
-    tags: data.tags || [],
+    tags: Array.isArray(data.tags) ? data.tags.map((tag: any) => String(tag)) : [],
     content: markdownContent
   };
 });

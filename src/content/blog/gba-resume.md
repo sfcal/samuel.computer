@@ -187,7 +187,7 @@ Butano is a bit finicky with importing assets and needs precisely uncompressed .
     cap.release()
 ```
 <br><br/>
-<div style="text-align: center;">Claude did a great job vibing out the right color pallet for my image.</div>
+<div style="text-align: center;">Claude did a great job vibing out the right color palette for my image.</div>
 <img src="/assets/blog/gba-resume/color-palette.png" alt="Color palette code" style="max-width: 100%; margin: 0 auto; display: block;" /><br><br/>
 
 
