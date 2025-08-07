@@ -1,3 +1,4 @@
+import React from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { Calendar, ArrowLeft, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -9,6 +10,23 @@ import { getPostBySlug } from '../data/blog';
 
 const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+  
+  // Helper function to safely render children from ReactMarkdown
+  const renderChildren = (children: any) => {
+    if (Array.isArray(children)) {
+      return (
+        <>
+          {children.map((child, index) => {
+            if (typeof child === 'object' && child !== null) {
+              return <React.Fragment key={index}>{child}</React.Fragment>;
+            }
+            return child;
+          })}
+        </>
+      );
+    }
+    return children;
+  };
   
   if (!slug) {
     return <Navigate to="/blog" replace />;
@@ -120,15 +138,15 @@ const BlogPost: React.FC = () => {
                   </a>
                 );
               },
-              // Explicitly render headings
-              h1: ({ children }) => <h1 className="text-4xl font-bold mt-8 mb-4">{children}</h1>,
-              h2: ({ children }) => <h2 className="text-3xl font-bold mt-6 mb-3">{children}</h2>,
-              h3: ({ children }) => <h3 className="text-2xl font-bold mt-4 mb-2">{children}</h3>,
-              h4: ({ children }) => <h4 className="text-xl font-bold mt-3 mb-2">{children}</h4>,
-              h5: ({ children }) => <h5 className="text-lg font-bold mt-2 mb-1">{children}</h5>,
-              h6: ({ children }) => <h6 className="text-base font-bold mt-2 mb-1">{children}</h6>,
-              ul: ({ children }) => <ul className="list-disc pl-6 my-4 space-y-2">{children}</ul>,
-              li: ({ children }) => <li className="text-gray-700 dark:text-gray-300">{children}</li>
+              // Explicitly render headings - ensure children are properly rendered as React nodes
+              h1: ({ children }) => <h1 className="text-4xl font-bold mt-8 mb-4">{renderChildren(children)}</h1>,
+              h2: ({ children }) => <h2 className="text-3xl font-bold mt-6 mb-3">{renderChildren(children)}</h2>,
+              h3: ({ children }) => <h3 className="text-2xl font-bold mt-4 mb-2">{renderChildren(children)}</h3>,
+              h4: ({ children }) => <h4 className="text-xl font-bold mt-3 mb-2">{renderChildren(children)}</h4>,
+              h5: ({ children }) => <h5 className="text-lg font-bold mt-2 mb-1">{renderChildren(children)}</h5>,
+              h6: ({ children }) => <h6 className="text-base font-bold mt-2 mb-1">{renderChildren(children)}</h6>,
+              ul: ({ children }) => <ul className="list-disc pl-6 my-4 space-y-2">{renderChildren(children)}</ul>,
+              li: ({ children }) => <li className="text-gray-700 dark:text-gray-300">{renderChildren(children)}</li>
             }}
           >
             {post.content}
