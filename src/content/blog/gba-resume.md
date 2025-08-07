@@ -230,7 +230,7 @@ A 3D printed insert to hold and display both items finished off the project. My 
 
 I looked into replacing these original screens with updated IPS panels, but couldn’t justify the cost. As an alternative, I’ve included a led worm light, another childhood staple. <br><br/>
 
-<img src="/assets/blog/gba-resume/contrast.png" alt="Gift box packaging" style="max-width: 70%; margin: 0 auto; display: block;" /> <br><br/>
+<img src="/assets/blog/gba-resume/contrast.png" alt="Contast difference between IPS screen" style="max-width: 70%; margin: 0 auto; display: block;" /> <br><br/>
 
 I’ve shipped off 5 of these packages to prospective companies with the hope of getting a foot in the door. Regardless of the outcome, I’ve had fun putting this project together and am proud of what I’ve made.
 
