@@ -21,15 +21,15 @@ On one end LinkedIn and other job sites have pushed the cost of advertising open
 
 A more human approach is needed.<br><br/>
 
-One of the advantages of living in NYC is the ease of moving from the online to the real world. Weekly meetups offer deeper connection and instant feedback from similar professionals. (S/o rust meetup NYC)<br><br/>
+One of the advantages of living in NYC is the ease of moving from the online to the real world. Weekly meetups offer deeper connection and instant feedback from similar professionals. (S/o <a href="https://www.meetup.com/rust-nyc/" style="color: #3b82f6;">rust meetup NYC</a>)<br><br/>
 
 Still, I wanted to stand out while offering a tactile memento. And so, out of childhood love and fun, the Game Boy Advance Resume…<br><br/>
 
 <img src="/assets/blog/gba-resume/start.png" alt="Start screen" style="max-width: 50%; margin: 0 auto; display: block;" />
 
-This was always meant to be a smallscale, quick project. I'm not interested in pursuing game development or understanding the inner workings of a 20 y/o game console. Butano was perfect for this, it offers a high level C++ library with many examples to draw from.<br><br/>
+This was always meant to be a smallscale, quick project. I'm not interested in pursuing game development or understanding the inner workings of a 20 y/o game console. <a href="https://github.com/GValiente/butano" style="color: #3b82f6;">Butano</a> was perfect for this, it offers a high level C++ library with many examples to draw from.<br><br/>
 
-During my preliminary research I came across a creator who put Tenet on 5 GBA cartridges using the project avi2gba. Unfortunately, this project appears to have been abandoned over a decade ago. However, I really wanted to incorporate a small video into the startup of my game.<br><br/>
+During my preliminary research I came across a creator who put <a href="https://www.youtube.com/watch?v=S4od1AdB8e4" style="color: #3b82f6;">Tenet</a> on 5 GBA cartridges using the project <a href="https://github.com/kran27/Meteo-AVI-to-GBA" style="color: #3b82f6;">avi2gba</a>. Unfortunately, this project appears to have been abandoned over a decade ago. However, I really wanted to incorporate a small video into the startup of my game.<br><br/>
 
 I reached out on the gbadev discord to see if anyone had done something similar.<br><br/>
 
@@ -192,7 +192,7 @@ Butano is a bit finicky with importing assets and needs precisely uncompressed .
 
 
 
-After showing off the basic prototype to the group at <a href="http://sideprojectsaturday.com" style="color: #3b82f6;">sideprojectsaturday.com</a>, the main criticism was that it needed more than just a physical implementation if I was going to get my project in front of as many eyeballs as possible. As the name suggests, GBAjs2 is a Game Boy Advance emulator written entirely in JS. While not perfectly compatible with all games and some issues with Firefox, Andy’s implementation worked perfectly with my ROM. Only minor changes were needed to autoload my ROM on startup. Thanks Andy!
+After showing off the basic prototype to the group at <a href="http://sideprojectsaturday.com" style="color: #3b82f6;">sideprojectsaturday.com</a>, the main criticism was that it needed more than just a physical implementation if I was going to get my project in front of as many eyeballs as possible. As the name suggests, <a href="https://github.com/andychase/gbajs2" style="color: #3b82f6;">GBAjs2</a> is a Game Boy Advance emulator written entirely in JS. While not perfectly compatible with all games and some issues with Firefox, Andy’s implementation worked perfectly with my ROM. Only minor changes were needed to autoload my ROM on startup. Thanks Andy!
 
 ## Hardware
 
@@ -206,7 +206,7 @@ The real ‘wow factor’ of this project is being able to play the game on genu
 The most expensive part of this project was going to be acquiring the Game Boys. With most eBay listings hovering between $60 - $100 this was a non-starter since I was risking them never being returned. I did see references to knockoff Game Boys that played actual cartridges ~5 years ago, but it appears that production has stopped and they no longer fetch a reasonable price.<br><br/>
  
 
-Game Boy Advances aren’t region locked, what if I went directly to the source? Searching Japanese auction sites, I was able to find hundreds of listings for aging GBAs in workable condition. Even better, many of them were being sold in lots. Using buyee.jp, I was able to bid on these auctions and secure 10x GBAs for $30 each after import fees.<br><br/>
+Game Boy Advances aren’t region locked, what if I went directly to the source? Searching Japanese auction sites, I was able to find hundreds of listings for aging GBAs in workable condition. Even better, many of them were being sold in lots. Using <a href="http://buyee.jp" style="color: #3b82f6;">buyee.jp</a>, I was able to bid on these auctions and secure 10x GBAs for $30 each after import fees.<br><br/>
 
 
 <img src="/assets/blog/gba-resume/buyee-auction.png" alt="GBA auction" style="max-width: 100%; margin: 0 auto; display: block;" />
@@ -214,7 +214,7 @@ Game Boy Advances aren’t region locked, what if I went directly to the source?
 With the consoles secured and ROM file in hand, I now needed cartridges and a way to write them.<br><br/>
  
 
-The GBxCart RW was the perfect option for writing ROMs with support for a broad range of after market carts and a database available of known carts ([https://flashcartdb.com/](https://flashcartdb.com/)).<br><br/>
+The <a href="https://www.gbxcart.com/" style="color: #3b82f6;">GBxCart RW</a> was the perfect option for writing ROMs with support for a broad range of after market carts and a database available of known carts <a href="https://flashcartdb.com/" style="color: #3b82f6;">flashcartdb.com</a>.<br><br/>
  
 
 Even with these resources I found it difficult to determine what cartridge I would be getting from the Aliexpress vendors. Eventually I decided to roll the dice on some clone Mother 3 carts. <br><br/>
@@ -222,13 +222,13 @@ Even with these resources I found it difficult to determine what cartridge I wou
 
 <img src="/assets/blog/gba-resume/mother3-carts.png" alt="Mother 3 cartridges" style="max-width: 100%; margin: 0 auto; display: block;" />
 
-This ended up working out! I asked my friend Jess to design some custom labels then added NFC tags inside each shell that link directly to the online emulator. I've found that people love the experience of "plugging in" the game to the back of their phones. This retro feel with modern devices is certainly my favorite part.<br><br/>
+This ended up working out! I asked my friend <a href="https://www.jessundart.com/" style="color: #3b82f6;">Jess</a> to design some custom labels then added NFC tags inside each shell that link directly to the online emulator. I've found that people love the experience of "plugging in" the game to the back of their phones. This retro feel with modern devices is certainly my favorite part.<br><br/>
 
 <img src="/assets/blog/gba-resume/flashing.png" alt="Flashing cartridges" style="max-width: 70%; margin: 0 auto; display: block;" />
 
 A 3D printed insert to hold and display both items finished off the project. My biggest disappointment has been the low contrast of these original Game Boy Advance screens. <br><br/>
 
-I looked into replacing these original screens with updated IPS panels, but couldn’t justify the cost. As an alternative, I’ve included a led worm light, another childhood staple. <br><br/>
+I looked into replacing these original screens with updated IPS panels, but couldn’t justify the cost. As an alternative, I’ve included a LED worm light, another childhood staple. <br><br/>
 
 <img src="/assets/blog/gba-resume/contrast.png" alt="Contast difference between IPS screen" style="max-width: 70%; margin: 0 auto; display: block;" /> <br><br/>
 
