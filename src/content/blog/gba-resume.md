@@ -31,7 +31,7 @@ This was always meant to be a smallscale, quick project. I'm not interested in p
 
 During my preliminary research I came across a creator who put <a href="https://www.youtube.com/watch?v=S4od1AdB8e4" style="color: #3b82f6;">Tenet</a> on 5 GBA cartridges using the project <a href="https://github.com/kran27/Meteo-AVI-to-GBA" style="color: #3b82f6;">avi2gba</a>. Unfortunately, this project appears to have been abandoned over a decade ago. However, I really wanted to incorporate a small video into the startup of my game.<br><br/>
 
-I reached out on the gbadev discord to see if anyone had done something similar.<br><br/>
+I reached out on the <a href="https://gbadev.net" style="color: #3b82f6;">gbadev</a> discord to see if anyone had done something similar.<br><br/>
 
 <img src="/assets/blog/gba-resume/discord-conversation.png" alt="Discord chat" style="max-width: 70%; margin: 0 auto; display: block;" />
 
