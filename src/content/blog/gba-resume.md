@@ -27,7 +27,7 @@ Still, I wanted to stand out while offering a tactile memento. And so, out of ch
 
 <img src="/assets/blog/gba-resume/start.png" alt="Start screen" style="max-width: 50%; margin: 0 auto; display: block;" />
 
-This was always meant to be a smallscale, quick project. I'm not interested in pursuing game development or understanding the inner workings of a 20 y/o game console. <a href="https://github.com/GValiente/butano" style="color: #3b82f6;">Butano</a> was perfect for this, it offers a high level C++ library with many examples to draw from.<br><br/>
+This was always meant to be a smallscale, quick project. I'm not interested in pursuing game development or understanding the inner workings of a 20 y/o game console. <a href="https://github.com/GValiente/butano" style="color: #3b82f6;">Butano</a> was perfect for this, it offers a high level C++ library with many examples to draw from. This let me brush up on my C++ in a way that was much more fun than grinding leetcode.<br><br/>
 
 During my preliminary research I came across a creator who put <a href="https://www.youtube.com/watch?v=S4od1AdB8e4" style="color: #3b82f6;">Tenet</a> on 5 GBA cartridges using the project <a href="https://github.com/kran27/Meteo-AVI-to-GBA" style="color: #3b82f6;">avi2gba</a>. Unfortunately, this project appears to have been abandoned over a decade ago. However, I really wanted to incorporate a small video into the startup of my game.<br><br/>
 
