@@ -13,7 +13,11 @@ const markdownFrontmatter = (): Plugin => ({
   enforce: 'pre',
   transform(src, id) {
     if (!id.endsWith('.md')) return null;
-    const { data, content } = matter(src);
+    const { data, content: rawContent } = matter(src);
+    // Posts reference images by their repo location (../../../public/assets/...)
+    // so Obsidian and GitHub previews resolve them; the site serves public/ at
+    // the root, so map them to site-absolute URLs here
+    const content = rawContent.replace(/\]\((?:\.\.\/)+public\//g, '](/');
     const readingMinutes = Math.max(1, Math.round(content.trim().split(/\s+/).length / 200));
     return {
       code: [

@@ -6,7 +6,7 @@ tags: ["gamedev", "hardware", "creative", "job-hunting"]
 image: "/assets/blog/gba-resume/gba-resume-main.png"
 ---
 
-![Resume cartridge](/assets/blog/gba-resume/gba-resume-main.png "50% 1256x769")
+![Resume cartridge](../../../public/assets/blog/gba-resume/gba-resume-main.png "50% 1256x769")
 
 > ### Play it on the web @ [gba.samuel.computer](https://gba.samuel.computer)
 
@@ -14,9 +14,9 @@ Looking for a new job in NYC this summer has been a challenge.
 
 On one end LinkedIn and other job sites have pushed the cost of advertising openings to nearly zero. On the other, AI and “Easy Apply” have made it simple to tailor your application to as many jobs as possible and push out slop. The consequences of these competing forces are heavy-handed application filters and automated black box rejections.
 
-![520 applicants](/assets/blog/gba-resume/linkedin-stats-1.png "258x98")
+![520 applicants](../../../public/assets/blog/gba-resume/linkedin-stats-1.png "258x98")
 
-![Rejection message](/assets/blog/gba-resume/linkedin-stats-2.png "660x76")
+![Rejection message](../../../public/assets/blog/gba-resume/linkedin-stats-2.png "660x76")
 
 A more human approach is needed.
 
@@ -24,7 +24,7 @@ One of the advantages of living in NYC is the ease of moving from the online to 
 
 Still, I wanted to stand out while offering a tactile memento. And so, out of childhood love and fun, the Game Boy Advance Resume…
 
-![Start screen](/assets/blog/gba-resume/start.png "50% 960x636")
+![Start screen](../../../public/assets/blog/gba-resume/start.png "50% 960x636")
 
 This was always meant to be a smallscale, quick project. I'm not interested in pursuing game development or understanding the inner workings of a 20 y/o game console. [Butano](https://github.com/GValiente/butano) was perfect for this, it offers a high level C++ library with many examples to draw from. This let me brush up on my C++ in a way that was much more fun than grinding leetcode.
 
@@ -32,7 +32,7 @@ During my preliminary research I came across a creator who put [Tenet](https://w
 
 I reached out on the [gbadev](https://gbadev.net) discord to see if anyone had done something similar.
 
-![Discord chat](/assets/blog/gba-resume/discord-conversation.png "70% 767x361")
+![Discord chat](../../../public/assets/blog/gba-resume/discord-conversation.png "70% 767x361")
 
 And in the most chopped way imaginable, you can in fact change a background frame every second to accomplish exactly this.
 
@@ -87,7 +87,7 @@ Butano is a bit finicky with importing assets and needs precisely uncompressed .
 - 4-bit BMP (16 colors)
 - JSON metadata enabling Butano's tile deduplication
 
-![Video processing](/assets/blog/gba-resume/processing_pipeline.mp4 "1280x720")
+![Video processing](../../../public/assets/blog/gba-resume/processing_pipeline.mp4 "1280x720")
 
 ```python
 # Open video with OpenCV
@@ -187,7 +187,7 @@ Butano is a bit finicky with importing assets and needs precisely uncompressed .
 
 *Claude did a great job vibing out the right color palette for my image.*
 
-![Color palette code](/assets/blog/gba-resume/color-palette.png "556x758")
+![Color palette code](../../../public/assets/blog/gba-resume/color-palette.png "556x758")
 
 After showing off the basic prototype to the group at [sideprojectsaturday.com](http://sideprojectsaturday.com), the main criticism was that it needed more than just a physical implementation if I was going to get my project in front of as many eyeballs as possible. As the name suggests, [GBAjs2](https://github.com/andychase/gbajs2) is a Game Boy Advance emulator written entirely in JS. While not perfectly compatible with all games and some issues with Firefox, Andy’s implementation worked perfectly with my ROM. Only minor changes were needed to autoload my ROM on startup. Thanks Andy!
 
@@ -204,7 +204,7 @@ The most expensive part of this project was going to be acquiring the Game Boys.
 
 Game Boy Advances aren’t region locked, what if I went directly to the source? Searching Japanese auction sites, I was able to find hundreds of listings for aging GBAs in workable condition. Even better, many of them were being sold in lots. Using [buyee.jp](http://buyee.jp), I was able to bid on these auctions and secure 10x GBAs for $30 each after import fees.
 
-![GBA auction](/assets/blog/gba-resume/buyee-auction.png "1258x643")
+![GBA auction](../../../public/assets/blog/gba-resume/buyee-auction.png "1258x643")
 
 With the consoles secured and ROM file in hand, I now needed cartridges and a way to write them.
 
@@ -212,20 +212,20 @@ The [GBxCart RW](https://www.gbxcart.com/) was the perfect option for writing RO
 
 Even with these resources I found it difficult to determine what cartridge I would be getting from the Aliexpress vendors. Eventually I decided to roll the dice on some clone Mother 3 carts.
 
-![Mother 3 cartridges](/assets/blog/gba-resume/mother3-carts.png "575x433")
+![Mother 3 cartridges](../../../public/assets/blog/gba-resume/mother3-carts.png "575x433")
 
 This ended up working out! I asked my friend [Jess](https://www.jessundart.com/) to design some custom labels then added NFC tags inside each shell that link directly to the online emulator. I've found that people love the experience of "plugging in" the game to the back of their phones. This retro feel with modern devices is certainly my favorite part.
 
-![Flashing cartridges](/assets/blog/gba-resume/flashing.jpg "70% 1400x1050")
+![Flashing cartridges](../../../public/assets/blog/gba-resume/flashing.jpg "70% 1400x1050")
 
 A 3D printed insert to hold and display both items finished off the project. My biggest disappointment has been the low contrast of these original Game Boy Advance screens.
 
 I looked into replacing these original screens with updated IPS panels, but couldn’t justify the cost. As an alternative, I’ve included a LED worm light, another childhood staple.
 
-![Contrast difference between IPS screen](/assets/blog/gba-resume/contrast.jpg "70% 1400x901")
+![Contrast difference between IPS screen](../../../public/assets/blog/gba-resume/contrast.jpg "70% 1400x901")
 
 I’ve shipped off 5 of these packages to prospective companies with the hope of getting a foot in the door. Regardless of the outcome, I’ve had fun putting this project together and am proud of what I’ve made.
 
-![Gift box packaging](/assets/blog/gba-resume/box.jpg "70% 1400x1377")
+![Gift box packaging](../../../public/assets/blog/gba-resume/box.jpg "70% 1400x1377")
 
 I’m continuing to look for my next opportunity and creative outlet. If this project stirs something in you, please reach out. I’m always looking to connect with other makers.
