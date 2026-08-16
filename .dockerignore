@@ -1,0 +1,8 @@
+.git
+.github
+.claude
+node_modules
+dist
+README.md
+.vscode
+.DS_Store

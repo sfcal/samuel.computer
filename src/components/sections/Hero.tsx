@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Mail, Linkedin, Github } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export const Hero = () => {
@@ -6,16 +6,12 @@ export const Hero = () => {
 
   useEffect(() => {
     let scrollTimeout: ReturnType<typeof setTimeout>;
-    
-    const handleScroll = (e: Event) => {
-      const target = e.target as HTMLElement;
-      const scrollY = target.scrollTop;
-      
-      // Clear existing timeout
+
+    const handleScroll = () => {
       clearTimeout(scrollTimeout);
-      
+
       // Hide immediately when scrolling down
-      if (scrollY > 20) {
+      if (window.scrollY > 20) {
         setHideIndicator(true);
       } else {
         // Show again when at top
@@ -25,26 +21,16 @@ export const Hero = () => {
       }
     };
 
-    // Wait for DOM to be ready
-    const timer = setTimeout(() => {
-      const scrollContainer = document.getElementById('root');
-      if (scrollContainer) {
-        scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-        
-        // Check initial scroll position
-        if (scrollContainer.scrollTop > 20) {
-          setHideIndicator(true);
-        }
-      }
-    }, 100);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Check initial scroll position
+    if (window.scrollY > 20) {
+      setHideIndicator(true);
+    }
 
     return () => {
-      clearTimeout(timer);
       clearTimeout(scrollTimeout);
-      const scrollContainer = document.getElementById('root');
-      if (scrollContainer) {
-        scrollContainer.removeEventListener('scroll', handleScroll);
-      }
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -105,12 +91,14 @@ export const Hero = () => {
           pointerEvents: hideIndicator ? 'none' : 'auto'
         }}
       >
-        <a 
-          href="#projects" 
+        <a
+          href="#projects"
+          tabIndex={hideIndicator ? -1 : undefined}
+          aria-hidden={hideIndicator}
           className="flex flex-col items-center text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors animate-bounce"
         >
           <span className="text-sm font-medium mb-2 text-center">Featured projects</span>
-          <ChevronDown />
+          <ChevronDown aria-hidden="true" />
         </a>
       </div>
     </section>
@@ -119,22 +107,23 @@ export const Hero = () => {
 
 const SocialLinks = () => {
   const links = [
-    { href: 'mailto:hello@samuelcalvert.com', icon: 'fa-envelope' },
-    { href: 'https://linkedin.com/in/samuel-f-calvert', icon: 'fa-linkedin' },
-    { href: 'https://github.com/sfcal', icon: 'fa-github' },
+    { href: 'mailto:hello@samuelcalvert.com', label: 'Email', Icon: Mail },
+    { href: 'https://linkedin.com/in/samuel-f-calvert', label: 'LinkedIn profile', Icon: Linkedin },
+    { href: 'https://github.com/sfcal', label: 'GitHub profile', Icon: Github },
   ];
 
   return (
     <>
-      {links.map((link) => (
+      {links.map(({ href, label, Icon }) => (
         <a
-          key={link.href}
-          href={link.href}
-          target={link.href.startsWith('mailto') ? undefined : '_blank'}
-          rel={link.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+          key={href}
+          href={href}
+          aria-label={label}
+          target={href.startsWith('mailto') ? undefined : '_blank'}
+          rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
           className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
         >
-          <i className={`${link.icon === 'fa-envelope' ? 'fas' : 'fab'} ${link.icon} text-xl`} />
+          <Icon className="w-6 h-6" aria-hidden="true" />
         </a>
       ))}
     </>

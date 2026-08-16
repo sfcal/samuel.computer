@@ -1,12 +1,18 @@
 import { Link } from 'react-router-dom';
 import { Calendar, Clock, Tag } from 'lucide-react';
-import { getAllPosts } from '../data/blog';
+import { SEO, SITE_URL } from './SEO';
+import { getAllPosts, formatPostDate } from '../data/blog';
 
 const Blog: React.FC = () => {
   const posts = getAllPosts();
 
   return (
     <div className="container mx-auto px-4 pt-24 pb-16 max-w-4xl">
+        <SEO
+          title="Blog"
+          description="Thoughts on infrastructure, DevOps, and technology"
+          url={`${SITE_URL}/blog`}
+        />
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
@@ -24,16 +30,12 @@ const Blog: React.FC = () => {
               <div className="flex flex-col space-y-4">
                 <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
                   <div className="flex items-center space-x-1">
-                    <Calendar className="w-4 h-4" />
-                    <span>{new Date(post.date).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}</span>
+                    <Calendar className="w-4 h-4" aria-hidden="true" />
+                    <span>{formatPostDate(post.date)}</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Clock className="w-4 h-4" />
-                    <span>5 min read</span>
+                    <Clock className="w-4 h-4" aria-hidden="true" />
+                    <span>{post.readingMinutes} min read</span>
                   </div>
                 </div>
 

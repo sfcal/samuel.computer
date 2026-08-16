@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Moon, Sun } from 'lucide-react';
+import { useTheme } from '../../hooks/useTheme';
 
 export const Navbar = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
@@ -13,7 +16,7 @@ export const Navbar = () => {
     const updateActiveSection = () => {
       const sections = ['hero', 'projects'];
       const scrollPosition = window.scrollY + 100;
-      
+
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
@@ -26,7 +29,7 @@ export const Navbar = () => {
       }
     };
 
-    window.addEventListener('scroll', updateActiveSection);
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
     return () => window.removeEventListener('scroll', updateActiveSection);
   }, [isHomePage]);
 
@@ -38,9 +41,9 @@ export const Navbar = () => {
             <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
               SC
             </Link>
-            
+
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-8 ml-auto">
+            <div className="hidden md:flex items-center space-x-8 ml-auto mr-4">
               {isHomePage ? (
                 <>
                   <a href="#projects" className={`transition-colors ${activeSection === 'projects' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}`}>
@@ -67,18 +70,33 @@ export const Navbar = () => {
                 </>
               )}
             </div>
-            
-            <div className="flex items-center space-x-4">
-              {/* Mobile menu button */}
-              <button 
-                onClick={() => setMobileMenu(!mobileMenu)} 
-                className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+
+            <div className="flex items-center space-x-2">
+              {/* Theme toggle */}
+              <button
+                onClick={toggleTheme}
+                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
               >
-                <i className="fas fa-bars text-gray-600 dark:text-gray-300"></i>
+                {theme === 'dark'
+                  ? <Sun className="w-5 h-5" aria-hidden="true" />
+                  : <Moon className="w-5 h-5" aria-hidden="true" />}
+              </button>
+
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setMobileMenu(!mobileMenu)}
+                aria-label={mobileMenu ? 'Close menu' : 'Open menu'}
+                aria-expanded={mobileMenu}
+                className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
+              >
+                {mobileMenu
+                  ? <X className="w-5 h-5" aria-hidden="true" />
+                  : <Menu className="w-5 h-5" aria-hidden="true" />}
               </button>
             </div>
           </div>
-          
+
           {/* Mobile Menu */}
           {mobileMenu && (
             <div className="md:hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">

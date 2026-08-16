@@ -2,33 +2,21 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Custom font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
 @layer base {
-  /* Prevent overscroll bounce on mobile */
-  html {
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  
+  /* Prevent overscroll bounce / pull-to-refresh without hijacking the scroll
+     container — the window stays the scroller so scroll events, keyboard
+     scrolling, and native scroll restoration all work */
+  html,
   body {
-    overscroll-behavior: none;
-    /* Prevent pull-to-refresh on mobile */
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    overscroll-behavior-y: none;
   }
-  
-  /* Main scrollable container */
-  #root {
-    height: 100%;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
-  
+
   /* Scrollbar styles */
   ::-webkit-scrollbar {
     width: 10px;

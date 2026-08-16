@@ -1,23 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-export const useTheme = () => {
-  const [theme, setTheme] = useState<'light' | 'dark'>(
-    localStorage.getItem('theme') as 'light' | 'dark' || 'light'
-  );
+type Theme = 'light' | 'dark';
+
+// Matches the inline script in index.html that applies the class before first paint
+const getInitialTheme = (): Theme => {
+  const stored = localStorage.getItem('theme');
+  if (stored === 'light' || stored === 'dark') return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
+export function useTheme() {
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('theme', theme);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
+  // Only persist an explicit choice, so undecided visitors keep following their OS setting
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+    setTheme((current) => {
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      return next;
+    });
   };
 
   return { theme, toggleTheme };
-};
+}
