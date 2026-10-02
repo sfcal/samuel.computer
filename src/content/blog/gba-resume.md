@@ -203,7 +203,7 @@ The real ‘wow factor’ of this project is being able to play the game on genu
 - Custom labels
 - Packaging
 
-The most expensive part of this project was going to be acquiring the Game Boys. With most eBay listings hovering between $60 - $100 this was a non-starter since I was risking them never being returned. I did see references to knockoff Game Boys that played actual cartridges ~5 years ago, but it appears that production has stopped and they no longer fetch a reasonable price.<br><br/>
+The most expensive part of this project was going to be acquiring the Game Boys. With most eBay listings hovering between \$60 - \$100 this was a non-starter since I was risking them never being returned. I did see references to knockoff Game Boys that played actual cartridges ~5 years ago, but it appears that production has stopped and they no longer fetch a reasonable price.<br><br/>
  
 
 Game Boy Advances aren’t region locked, what if I went directly to the source? Searching Japanese auction sites, I was able to find hundreds of listings for aging GBAs in workable condition. Even better, many of them were being sold in lots. Using <a href="http://buyee.jp" style="color: #3b82f6;">buyee.jp</a>, I was able to bid on these auctions and secure 10x GBAs for $30 each after import fees.<br><br/>

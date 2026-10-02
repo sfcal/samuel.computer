@@ -3,7 +3,10 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { Calendar, ArrowLeft, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 import rehypeRaw from 'rehype-raw';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { getPostBySlug } from '../data/blog';
@@ -99,8 +102,8 @@ const BlogPost: React.FC = () => {
           prose-li:text-gray-700 dark:prose-li:text-gray-300"
         >
           <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw]}
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeRaw, rehypeKatex]}
             components={{
               code({ node, inline, className, children, ...props }: any) {
                 const match = /language-(\w+)/.exec(className || '');
@@ -146,7 +149,16 @@ const BlogPost: React.FC = () => {
               h5: ({ children }) => <h5 className="text-lg font-bold mt-2 mb-1">{renderChildren(children)}</h5>,
               h6: ({ children }) => <h6 className="text-base font-bold mt-2 mb-1">{renderChildren(children)}</h6>,
               ul: ({ children }) => <ul className="list-disc pl-6 my-4 space-y-2">{renderChildren(children)}</ul>,
-              li: ({ children }) => <li className="text-gray-700 dark:text-gray-300">{renderChildren(children)}</li>
+              li: ({ children }) => <li className="text-gray-700 dark:text-gray-300">{renderChildren(children)}</li>,
+              table: ({ children }) => (
+                <div className="my-6 overflow-x-auto">
+                  <table className="w-full border-collapse text-left text-sm">{children}</table>
+                </div>
+              ),
+              th: ({ children }) => <th className="border border-gray-200 dark:border-gray-700 bg-gray-100/70 dark:bg-gray-900/50 px-4 py-2 font-semibold">{children}</th>,
+              td: ({ children }) => <td className="border border-gray-200 dark:border-gray-700 px-4 py-2">{children}</td>,
+              details: ({ children }) => <details className="my-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-gray-900/40 px-6 py-4 [&[open]>summary]:mb-4">{children}</details>,
+              summary: ({ children }) => <summary className="cursor-pointer font-semibold text-gray-900 dark:text-white">{children}</summary>
             }}
           >
             {post.content}

@@ -96,6 +96,13 @@
   }
 }
 
+/* Let wide display equations scroll inside the post instead of widening the page */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+
 /* Mobile-specific fixes */
 @media (max-width: 768px) {
   /* Add extra padding at the bottom to prevent content from being too close to viewport edge */
