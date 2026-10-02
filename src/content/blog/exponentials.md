@@ -4,9 +4,9 @@ date: "2026-10-02"
 excerpt: "Building up an intuition for exponentials and logarithms as mappings between addition and multiplication."
 tags: ["math", "exponentials"]
 ---
-One of, if not *the* hardest thing about math is the same operation can be viewed from many different lenses. This is math's super power, but can make mathematical objects appear fuzzy at the edges, and hard to pin down.<br><br/>
+One of, if not *the* hardest thing about math is the same operation can be viewed from many different lenses. This is math's super power, but can make mathematical objects appear fuzzy at the edges, and hard to pin down.
 
-I'd like to slowly build up your intuition for exponentials, showing how, at its core, the fundamental property of exponentials and logarithms are that they are mappings from addition to multiplication, and from multiplication back to addition.<br><br/>
+I'd like to slowly build up your intuition for exponentials, showing how, at its core, the fundamental property of exponentials and logarithms are that they are mappings from addition to multiplication, and from multiplication back to addition.
 
 In mathematical lingo, we'd say that exponentials are a group isomorphism from the additive group of the reals onto the multiplicative group of positive reals. Or more terse:
 
@@ -16,7 +16,7 @@ $$
 
 It's okay if neither explanation makes sense yet. With each successive step into larger sets starting with the Naturals and moving up to the Reals we'll see that what once may have seemed like an arbitrary choice of algebraic manipulation is ultimately reinforcing a rich underlying structure.
 
-<img src="/assets/blog/exponentials/number-sets-nested.png" alt="Nested number sets: naturals inside wholes inside integers inside rationals inside reals" style="max-width: 100%; margin: 0 auto; display: block;" />
+![Nested number sets: naturals inside wholes inside integers inside rationals inside reals](../../../public/assets/blog/exponentials/number-sets-nested.png "1200x573")
 
 ## Natural Numbers $\mathbb{N}$
 
@@ -72,9 +72,9 @@ $$
 f_b : a \mapsto a + b
 $$
 
-<img src="/assets/blog/exponentials/numberline_slide.gif" alt="The number line sliding by b" style="max-width: 100%; margin: 0 auto; display: block;" />
+![The number line sliding by b](../../../public/assets/blog/exponentials/numberline_slide.gif "768x222")
 
-A number as a function? Acting on the whole number line? There's a big mental shift going on here. Thinking about numbers as actions performed on the spaces they live in doesn't feel comparable to thinking about them as objects in a set. But that's the intuition we're building here. Being able to move freely between these pictures will unlock new connections between once unrelated topics.<br><br/>
+A number as a function? Acting on the whole number line? There's a big mental shift going on here. Thinking about numbers as actions performed on the spaces they live in doesn't feel comparable to thinking about them as objects in a set. But that's the intuition we're building here. Being able to move freely between these pictures will unlock new connections between once unrelated topics.
 
 Multiplication follows a similar thought process. Which function $g_b$ stretches the number line by a factor of $b$?
 
@@ -82,7 +82,7 @@ $$
 g_b : a \mapsto b\cdot a
 $$
 
-<img src="/assets/blog/exponentials/numberline_stretch.gif" alt="The number line stretching by a factor of b" style="max-width: 100%; margin: 0 auto; display: block;" />
+![The number line stretching by a factor of b](../../../public/assets/blog/exponentials/numberline_stretch.gif "768x222")
 
 Doing one after another is function composition, and it's equivalent to performing each action in sequence.
 
@@ -110,7 +110,7 @@ $$
 
 This is our fundamental property in a new light: **the exponential turns slides into stretches.** A slide by $b$ on the input side becomes a stretch by $2^b$ on the output side.
 
-<img src="/assets/blog/exponentials/exp_slides_to_stretches.gif" alt="The exponential turning slides on the input line into stretches on the output line" style="max-width: 100%; margin: 0 auto; display: block;" />
+![The exponential turning slides on the input line into stretches on the output line](../../../public/assets/blog/exponentials/exp_slides_to_stretches.gif "768x432")
 
 This is our same identity as before, but recontextualized from our new idea as numbers as functions!
 
@@ -165,57 +165,53 @@ $$
 
 To our delight, the fundamental property still holds.
 
-<details>
-<summary>A more functional view</summary>
-
-Repetition is composition. Sliding by $x$ three times is one slide by $3x$; stretching by $c$ three times is one stretch by $c^3$. We express a function repeatedly composed with itself using the notation $f_x^{\,\circ n}$ where $n$ is the number of times $f_x$ is being composed.
-
-$$
-f_x^{\,\circ 3} = f_x \circ f_x \circ f_x = f_{3x}, \qquad g_c^{\,\circ 3} = g_c \circ g_c \circ g_c = g_{c^3}.
-$$
-
-Take $2^{2+2} = 2^2 \cdot 2^2 = 2^4$ and watch it happen on both number lines.<br><br/>
-
-**Upstairs, on the exponent line**, the exponent $4$ is built from two slides by $2$. Each blue arrow is one $f_{2}$; laid end to end they cover the same distance as the single orange $f_{4}$. That's $2 + 2 = 4$, drawn:
-
-$$
-f_{2} \circ f_{2} = f_{2}^{\,\circ 2} = f_{4}.
-$$
-
-<img src="/assets/blog/exponentials/numberline_slide_n.gif" alt="Two slides by 2 composing into a single slide by 4" style="max-width: 100%; margin: 0 auto; display: block;" />
-
-**Downstairs, on the value line**, the exponential has translated each slide by $2$ into a stretch by $2^2 = 4$. Two of those stretches take the point from $1$ to $4$ to $16$ — the same place a single stretch by $2^4 = 16$ sends it. That's $4 \cdot 4 = 16$, drawn:
-
-$$
-g_{4} \circ g_{4} = g_{4}^{\,\circ 2} = g_{16}.
-$$
-
-<img src="/assets/blog/exponentials/numberline_stretch_n.gif" alt="Two stretches by 4 composing into a single stretch by 16" style="max-width: 100%; margin: 0 auto; display: block;" />
-
-Notice the shapes. Upstairs the blue arrows are equal, because adding $2$ twice is two equal steps. Downstairs the second blue arrow is four times the first, because multiplying by $4$ twice is a step that grows. The exponential turned "equal steps" into "steps that grow by the same factor" — that's what $(2^2)^2 = 2^{2\cdot2}$ *looks like*.<br><br/>
-
-Now run it backwards. Which slide, done twice, gives a slide by $1$? Half of it:
-
-$$
-f_{1/2} \circ f_{1/2} = f_1
-$$
-
-<img src="/assets/blog/exponentials/numberline_slide_half.gif" alt="Two slides by one half composing into a slide by 1" style="max-width: 100%; margin: 0 auto; display: block;" />
-
-The exponential turns slides into stretches, so it must send $f_{1/2}$ to a stretch that, done twice, gives a stretch by $2^1 = 2$:
-
-$$
-g_c \circ g_c = g_{c^2} = g_2 \;\;\Rightarrow\;\; c = \sqrt2
-$$
-
-<img src="/assets/blog/exponentials/numberline_stretch_half.gif" alt="Two stretches by the square root of 2 composing into a stretch by 2" style="max-width: 100%; margin: 0 auto; display: block;" />
-
-That is what $2^{1/2}$ means in this picture: half a slide upstairs becomes the square root of a stretch downstairs. The point goes $0 \to \tfrac12 \to 1$ on the exponent line and $1 \to 1.414 \to 2$ on the value line. Upstairs the two steps are equal. Downstairs the second step is $\sqrt2$ times the first, the same "grows by the same factor" shape as before.
-
-- **$n$ pieces:** $f_{1/n}^{\,\circ n} = f_1$ becomes $g_{2^{1/n}}^{\,\circ n} = g_2$.
-- **$m$ of those pieces:** $f_{m/n} = f_{1/n}^{\,\circ m}$ becomes $g_{2^{1/n}}^{\,\circ m}$, which is $2^{m/n}$ again.
-
-</details>
+> [!note]- A more functional view
+> Repetition is composition. Sliding by $x$ three times is one slide by $3x$; stretching by $c$ three times is one stretch by $c^3$. We express a function repeatedly composed with itself using the notation $f_x^{\,\circ n}$ where $n$ is the number of times $f_x$ is being composed.
+>
+> $$
+> f_x^{\,\circ 3} = f_x \circ f_x \circ f_x = f_{3x}, \qquad g_c^{\,\circ 3} = g_c \circ g_c \circ g_c = g_{c^3}.
+> $$
+>
+> Take $2^{2+2} = 2^2 \cdot 2^2 = 2^4$ and watch it happen on both number lines.
+>
+> **Upstairs, on the exponent line**, the exponent $4$ is built from two slides by $2$. Each blue arrow is one $f_{2}$; laid end to end they cover the same distance as the single orange $f_{4}$. That's $2 + 2 = 4$, drawn:
+>
+> $$
+> f_{2} \circ f_{2} = f_{2}^{\,\circ 2} = f_{4}.
+> $$
+>
+> ![Two slides by 2 composing into a single slide by 4](../../../public/assets/blog/exponentials/numberline_slide_n.gif "768x228")
+>
+> **Downstairs, on the value line**, the exponential has translated each slide by $2$ into a stretch by $2^2 = 4$. Two of those stretches take the point from $1$ to $4$ to $16$ — the same place a single stretch by $2^4 = 16$ sends it. That's $4 \cdot 4 = 16$, drawn:
+>
+> $$
+> g_{4} \circ g_{4} = g_{4}^{\,\circ 2} = g_{16}.
+> $$
+>
+> ![Two stretches by 4 composing into a single stretch by 16](../../../public/assets/blog/exponentials/numberline_stretch_n.gif "768x228")
+>
+> Notice the shapes. Upstairs the blue arrows are equal, because adding $2$ twice is two equal steps. Downstairs the second blue arrow is four times the first, because multiplying by $4$ twice is a step that grows. The exponential turned "equal steps" into "steps that grow by the same factor" — that's what $(2^2)^2 = 2^{2\cdot2}$ *looks like*.
+>
+> Now run it backwards. Which slide, done twice, gives a slide by $1$? Half of it:
+>
+> $$
+> f_{1/2} \circ f_{1/2} = f_1
+> $$
+>
+> ![Two slides by one half composing into a slide by 1](../../../public/assets/blog/exponentials/numberline_slide_half.gif "768x228")
+>
+> The exponential turns slides into stretches, so it must send $f_{1/2}$ to a stretch that, done twice, gives a stretch by $2^1 = 2$:
+>
+> $$
+> g_c \circ g_c = g_{c^2} = g_2 \;\;\Rightarrow\;\; c = \sqrt2
+> $$
+>
+> ![Two stretches by the square root of 2 composing into a stretch by 2](../../../public/assets/blog/exponentials/numberline_stretch_half.gif "768x228")
+>
+> That is what $2^{1/2}$ means in this picture: half a slide upstairs becomes the square root of a stretch downstairs. The point goes $0 \to \tfrac12 \to 1$ on the exponent line and $1 \to 1.414 \to 2$ on the value line. Upstairs the two steps are equal. Downstairs the second step is $\sqrt2$ times the first, the same "grows by the same factor" shape as before.
+>
+> - **$n$ pieces:** $f_{1/n}^{\,\circ n} = f_1$ becomes $g_{2^{1/n}}^{\,\circ n} = g_2$.
+> - **$m$ of those pieces:** $f_{m/n} = f_{1/n}^{\,\circ m}$ becomes $g_{2^{1/n}}^{\,\circ m}$, which is $2^{m/n}$ again.
 
 ## Reals $\mathbb{R}$
 
@@ -223,7 +219,7 @@ That is what $2^{1/2}$ means in this picture: half a slide upstairs becomes the 
 | ---------------- | --------------------------- | ------------------------------- | -------------------- |
 | Irrational       | $2^{\sqrt2} \approx 2.6651$ | $\log_2(2.6651) \approx \sqrt2$ | Preserves continuity |
 
-We've reached our final set $\mathbb{R}$, and with that, we'll see the definition of the exponential function in all its glory. We've been building up our intuition in both a value, and functional based context, seeing that in each framing, the mapping between addition and multiplication remains preserved. With the rationals, we proved that our mapping still holds, $x$ is decomposed into $n$ identical factors. But what do we do when $x$ is irrational?<br><br/>
+We've reached our final set $\mathbb{R}$, and with that, we'll see the definition of the exponential function in all its glory. We've been building up our intuition in both a value, and functional based context, seeing that in each framing, the mapping between addition and multiplication remains preserved. With the rationals, we proved that our mapping still holds, $x$ is decomposed into $n$ identical factors. But what do we do when $x$ is irrational?
 
 Starting with our example $f(x) = 2^x$, we can decompose it into $n$ factors.
 
@@ -241,7 +237,7 @@ $$
 
 Reading from inside out, we see $f(x)$ being decomposed into $n$ factors. Effectively zooming in on a very small neighborhood of $0$, next, we compose the function $n$ times, "zooming out" to see the function in its entirety.
 
-<img src="/assets/blog/exponentials/zoom_neighbourhood.gif" alt="Zooming in on 2^x near 0 until the curve looks like a straight line" style="width: 500px; max-width: 100%; margin: 0 auto; display: block;" />
+![Zooming in on 2^x near 0 until the curve looks like a straight line](../../../public/assets/blog/exponentials/zoom_neighbourhood.gif "65% 640x672")
 
 Once we zoom in far enough our function starts to look linear! This means we can find a rational approximation of $2^{\sqrt{2}}$.  Recalling our grade school algebra course, a line is fully characterized by $y = mx+c$ . We also know that our identity maps $0 \to 1$ so we can set our $y$ intercept to $1$, defining a linear approximation for our function at values close to $0$ as $2^{x/n} \approx 1 + m(\frac{x}{n})$. Doing this calculation with 1000 factors gets us reasonably close.
 
@@ -343,11 +339,11 @@ $$
 e = 2^{1/L(2)} \approx 2^{1.4427} \approx 2.718
 $$
 
-This is the number $e$, we've been searching for it all along. And it's the exact base where $\frac{d}{dx}e^x = e^x$.<br><br/>
+This is the number $e$, we've been searching for it all along. And it's the exact base where $\frac{d}{dx}e^x = e^x$.
 
 The "scale factor" as we've been calling it is generally known by another name. $L(b^x) = x\,L(b)$ is a log law giving us the inverse. Raising $e = b^{1/L(b)}$ to the power $L(b)$ gives $b = e^{L(b)}$, so $L(b) = \log_e b$. The scale factor was a logarithm all along. This is what defines the natural logarithm.
 
-<img src="/assets/blog/exponentials/exp-ln-inverse.png" alt="Graphs of e^x and ln x mirrored across the line y = x" style="width: 500px; max-width: 100%; margin: 0 auto; display: block;" />
+![Graphs of e^x and ln x mirrored across the line y = x](../../../public/assets/blog/exponentials/exp-ln-inverse.png "65% 800x800")
 
 ### Final Thoughts
 

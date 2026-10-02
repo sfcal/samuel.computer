@@ -1,4 +1,8 @@
-import { Helmet } from 'react-helmet-async';
+import { useEffect } from 'react';
+
+export const SITE_URL = 'https://samuel.computer';
+
+const DEFAULT_TITLE = 'Samuel Calvert - Infrastructure Engineer';
 
 interface SEOProps {
   title?: string;
@@ -6,52 +10,107 @@ interface SEOProps {
   keywords?: string[];
   image?: string;
   url?: string;
+  /** ISO date; when set, the page is marked up as an article/BlogPosting */
+  publishedTime?: string;
 }
 
-export const SEO = ({ 
-  title = 'Samuel Calvert - Infrastructure Engineer',
+// Update-in-place head manager: matches the static tags in index.html (so they
+// are updated, not duplicated) and creates anything missing. Every route
+// renders exactly one <SEO>, so the latest mount owns the whole set.
+const upsertTag = (selector: string, create: () => HTMLElement, attrs: Record<string, string>) => {
+  let el = document.head.querySelector<HTMLElement>(selector);
+  if (!el) {
+    el = create();
+    document.head.appendChild(el);
+  }
+  for (const [key, value] of Object.entries(attrs)) {
+    el.setAttribute(key, value);
+  }
+};
+
+const upsertMeta = (attr: 'name' | 'property', key: string, content: string) =>
+  upsertTag(`meta[${attr}="${key}"]`, () => document.createElement('meta'), {
+    [attr]: key,
+    content,
+  });
+
+const removeTag = (selector: string) => {
+  document.head.querySelector(selector)?.remove();
+};
+
+export const SEO = ({
+  title = DEFAULT_TITLE,
   description = 'Computer Engineering professional specializing in infrastructure automation, networking, and systems troubleshooting.',
   keywords = ['infrastructure', 'DevOps', 'Kubernetes', 'cloud', 'engineering'],
-  image = '/og-image.png',
-  url = 'https://samuelcalvert.com'
+  image = '/headshot.jpeg',
+  url = SITE_URL,
+  publishedTime,
 }: SEOProps) => {
-  const siteTitle = title === 'Samuel Calvert - Infrastructure Engineer' 
-    ? title 
-    : `${title} | Samuel Calvert`;
+  useEffect(() => {
+    const siteTitle = title === DEFAULT_TITLE ? title : `${title} | Samuel Calvert`;
+    const absoluteImage = image.startsWith('http') ? image : `${SITE_URL}${image}`;
 
-  return (
-    <Helmet>
-      <title>{siteTitle}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content={keywords.join(', ')} />
-      
-      {/* Open Graph */}
-      <meta property="og:title" content={siteTitle} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={image} />
-      <meta property="og:url" content={url} />
-      <meta property="og:type" content="website" />
-      
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={siteTitle} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image} />
-      
-      {/* Structured Data */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Person",
-          "name": "Samuel Calvert",
-          "jobTitle": "Infrastructure Engineer",
-          "url": url,
-          "sameAs": [
-            "https://github.com/sfcal",
-            "https://linkedin.com/in/samuel-f-calvert"
-          ]
-        })}
-      </script>
-    </Helmet>
-  );
+    document.title = siteTitle;
+
+    upsertTag('link[rel="canonical"]', () => document.createElement('link'), {
+      rel: 'canonical',
+      href: url,
+    });
+
+    upsertMeta('name', 'description', description);
+    upsertMeta('name', 'keywords', keywords.join(', '));
+
+    upsertMeta('property', 'og:title', siteTitle);
+    upsertMeta('property', 'og:description', description);
+    upsertMeta('property', 'og:image', absoluteImage);
+    upsertMeta('property', 'og:url', url);
+    upsertMeta('property', 'og:type', publishedTime ? 'article' : 'website');
+    if (publishedTime) {
+      upsertMeta('property', 'article:published_time', publishedTime);
+    } else {
+      removeTag('meta[property="article:published_time"]');
+    }
+
+    upsertMeta('name', 'twitter:card', 'summary_large_image');
+    upsertMeta('name', 'twitter:title', siteTitle);
+    upsertMeta('name', 'twitter:description', description);
+    upsertMeta('name', 'twitter:image', absoluteImage);
+
+    const jsonLd = publishedTime
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: title,
+          description,
+          datePublished: publishedTime,
+          image: absoluteImage,
+          mainEntityOfPage: url,
+          author: {
+            '@type': 'Person',
+            name: 'Samuel Calvert',
+            url: SITE_URL,
+          },
+        }
+      : {
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: 'Samuel Calvert',
+          jobTitle: 'Infrastructure Engineer',
+          url: SITE_URL,
+          sameAs: [
+            'https://github.com/sfcal',
+            'https://linkedin.com/in/samuel-f-calvert',
+          ],
+        };
+
+    upsertTag('script[type="application/ld+json"]', () => {
+      const el = document.createElement('script');
+      el.setAttribute('type', 'application/ld+json');
+      return el;
+    }, {});
+    document.head.querySelector('script[type="application/ld+json"]')!.textContent =
+      JSON.stringify(jsonLd);
+  }, [title, description, keywords, image, url, publishedTime]);
+
+  return null;
 };
