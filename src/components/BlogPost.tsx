@@ -130,7 +130,10 @@ const BlogPost: React.FC = () => {
         </div>
       </header>
 
-      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50 shadow-xl">
+      {/* No backdrop-blur here: this card is as tall as the whole post, and a
+          backdrop-filter that size makes phones drop content while scrolling.
+          The backdrop is already a soft gradient, so the blur was not visible. */}
+      <div className="bg-white/70 dark:bg-gray-800/70 rounded-2xl p-8 md:p-12 border border-gray-200/50 dark:border-gray-700/50 shadow-xl">
         <div className="prose prose-gray dark:prose-invert max-w-none
           prose-headings:text-gray-900 dark:prose-headings:text-white
           prose-a:text-indigo-600 dark:prose-a:text-indigo-400
