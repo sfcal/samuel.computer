@@ -81,13 +81,6 @@ const structured = published
         if (day !== 1) document.documentElement.style.setProperty('--day', day);
         if (day < 0.5) document.documentElement.classList.add('night');
       } catch {}
-      // a page shown while its tab is hidden skips the dissolve between pages, which is no error
-      addEventListener('pagereveal', e => e.viewTransition?.ready.catch(() => {}));
-      // The dissolve away from this page is skipped if it is left within two seconds of
-      // arriving: Chrome, asked for a picture of a page it has only just drawn, now and
-      // then captures a blank white sheet, and the next page would fade in from that
-      // (seen when the bar's links are clicked in quick succession).
-      addEventListener('pageswap', e => { if (performance.now() < 2000) e.viewTransition?.skipTransition(); });
     </script>
     {/* where the browser offers it, fetch a page of this site as soon as its link is hovered */}
     <script type="speculationrules" is:inline>
