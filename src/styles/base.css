@@ -72,11 +72,13 @@ body {
   @view-transition { navigation: auto; }
 }
 /* The dissolve itself: the page being left is laid over the page arrived at
-   and fades away. The browser's own crossfade would instead fade the new page
-   in from nothing, so when the picture of the old page goes missing (Chrome,
-   on a quick repeat visit) the new page fades up from white. This way the new
-   page is fully drawn underneath from its first frame, whatever became of the
-   old picture; and should both pictures ever be missing, the sky shows. */
+   and fades away. (The browser's own crossfade fades the new page in from
+   nothing instead, which leaves it at the mercy of the old picture; this way
+   the new page is fully drawn underneath from its first frame, and should
+   both pictures ever be missing, the sky shows.) The picture of the old page
+   can itself come back blank white from Chrome when that page was only just
+   drawn, which Base.astro guards against by skipping the dissolve away from
+   a page younger than two seconds. */
 ::view-transition { background: var(--sky); }
 ::view-transition-new(root) { animation: none; }
 ::view-transition-old(root) {
