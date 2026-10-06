@@ -77,15 +77,9 @@ const structured = published
         (see scripts/state.js); a first visit starts in daylight. */}
     <script is:inline>
       try {
-        const { day = 1, scrolled = 1500 } = JSON.parse(sessionStorage.getItem('scene')) ?? {};
-        const root = document.documentElement.style;
-        if (day !== 1) root.setProperty('--day', day);
+        const { day = 1 } = JSON.parse(sessionStorage.getItem('scene')) ?? {};
+        if (day !== 1) document.documentElement.style.setProperty('--day', day);
         if (day < 0.5) document.documentElement.classList.add('night');
-        // the clouds and stars where scripts/sky.js will slide them, so they don't jump when it runs
-        const dpr = devicePixelRatio || 1;
-        const at = (offset, tile) => -Math.round((offset % tile) * dpr) / dpr + 'px';
-        root.setProperty('--clouds-y', at(scrolled, 181));
-        root.setProperty('--stars-y', at(scrolled * 0.5, 640));
       } catch {}
       // a page shown while its tab is hidden skips the dissolve between pages, which is no error
       addEventListener('pagereveal', e => e.viewTransition?.ready.catch(() => {}));

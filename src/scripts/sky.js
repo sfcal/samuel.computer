@@ -13,8 +13,6 @@ const STAR_TILE = 640;            // height of the star tile as drawn
 const STAR_SPEED = 0.5;           // the stars are far away, so they drift at half speed
 const FADE = 1500;                // pixels of scrolling from full night to full day
 const DRIFT = 0.25;               // how much of a page's own scroll the sky follows
-// Base.astro places the layers before the first paint with copies of TILE,
-// STAR_TILE, STAR_SPEED and FADE: change them there too
 
 export const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
