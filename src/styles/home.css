@@ -1,0 +1,157 @@
+/* The home page: a fixed scene under the header bar. Nothing here scrolls; the
+   wheel, touch drags and keys are read by script and move only the sky. */
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+html {
+  overscroll-behavior: none;
+  touch-action: pinch-zoom;   /* drags reach the script; pinch-zoom still works */
+  --globe: clamp(200px, 28vmin, 420px);     /* diameter of the Moon, which sits beneath the bar's right end */
+}
+
+/* A satellite in the night sky: the emoji as text, so a Mac or iPhone draws
+   Apple's. It never leaves the screen: it floats slowly to and fro inside the
+   open sky, below the header bar, above the hills and left of the Moon, and
+   when day comes it fades where it is. */
+.satellite {
+  position: fixed;
+  top: 0;
+  left: 0;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: clamp(26px, 4.4vmin, 44px);
+  line-height: 1;
+  image-rendering: auto;
+  pointer-events: none;
+  user-select: none;
+  opacity: calc(1 - var(--day));
+  will-change: opacity;
+  /* the box of sky it may use, as positions for its top-left corner */
+  --sky-top: calc(var(--gap) + var(--bar-height) + 20px);                        /* just under the bar */
+  --sky-bottom: calc(100vh - clamp(180px, 38vh, 420px) - 1.6em - 12px);          /* just above the hills */
+  --sky-left: 5vw;
+  --sky-right: calc(100vw - var(--gap) - var(--globe) * 1.15 - 1.6em - 16px);    /* short of the Moon and its glow */
+  --sky-height: calc(var(--sky-bottom) - var(--sky-top));
+}
+.satellite span {
+  display: block;
+  /* a slow drift up and across, then back the same way: a minute and a half each way */
+  animation: drift 90s ease-in-out -30s infinite alternate;
+}
+@keyframes drift {
+  from { transform: translate(var(--sky-left), calc(var(--sky-top) + var(--sky-height) * 0.8)) rotate(-12deg); }
+  to   { transform: translate(var(--sky-right), calc(var(--sky-top) + var(--sky-height) * 0.12)) rotate(-12deg); }
+}
+
+/* the Moon, drawn in text characters; it belongs to the night sky, so it drifts
+   and fades with the stars */
+.planet {
+  position: fixed;
+  /* just under the bar, lined up with its right end; the box is 1.3x the globe,
+     which leaves room around it for the glow */
+  top: calc(var(--gap) + env(safe-area-inset-top, 0px) + var(--bar-height) + var(--gap) - var(--globe) * 0.15);
+  right: calc(var(--gap) + env(safe-area-inset-right, 0px) - var(--globe) * 0.15);
+  width: calc(var(--globe) * 1.3);
+  height: calc(var(--globe) * 1.3);
+  image-rendering: auto;
+  pointer-events: none;
+  opacity: calc(1 - var(--day));
+  will-change: transform, opacity;
+}
+.moon, .planet canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.planet canvas { dynamic-range-limit: no-limit; }   /* let it use the display's HDR headroom */
+
+/* without a GPU shader, a plain pale glow stands in for the bloom */
+.planet.flat canvas { filter: drop-shadow(0 0 8px rgba(205, 215, 235, 0.45)); }
+
+/* A house that rises from behind the hills as you scroll down into the day.
+   It is the house emoji as text, so an iPhone or Mac draws Apple's own house;
+   other systems draw theirs. It sits behind the hills, which hide its foot. */
+.house {
+  position: fixed;
+  left: clamp(24px, 22%, 420px);
+  bottom: 0;
+  width: 1em;
+  height: 1em;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: clamp(56px, 10vmin, 104px);
+  line-height: 1;
+  text-align: center;
+  image-rendering: auto;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+  filter: brightness(calc(0.42 + 0.58 * var(--day)));   /* dim under the stars, like the hills */
+}
+
+/* rolling hills along the bottom, drawn and animated by script */
+.hills {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: clamp(180px, 38%, 420px);
+  overflow: hidden;
+  pointer-events: none;
+  filter: brightness(calc(0.42 + 0.58 * var(--day)));   /* dim under the stars */
+}
+/* drawn small and scaled up, so every dither dot is a hard-edged square */
+.hills canvas {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+/* "Samuel Calvert", large, in the middle of the screen: fat, rounded letters cut
+   from the same glass as the header bar (same tint, same frost, same bright rim
+   and soft shadow). Like the house it arrives with the day: it rises and fades
+   in as scrolling brings the clouds. The letter shapes come from one piece of
+   SVG text, used twice: to cut the frosted layer to shape, and to draw the
+   bar's edge highlights round the letters. */
+.name {
+  position: fixed;
+  top: 46%;
+  left: 50%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
+  image-rendering: auto;
+  will-change: transform, opacity;
+}
+.name-glass, .name svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.name-glass {                 /* the bar's glass, letter-shaped */
+  -webkit-clip-path: url(#name-clip);
+  clip-path: url(#name-clip);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 62%);
+  background-color: var(--name-tint);
+  transition: background-color 0.5s;
+  -webkit-backdrop-filter: blur(10px) saturate(1.5);
+  backdrop-filter: blur(10px) saturate(1.5);
+}
+.name svg {
+  overflow: visible;
+  /* a hairline of blue so the pale glass still reads against white cloud, and the bar's soft shadow below */
+  filter: drop-shadow(0 0 1.5px rgba(0, 45, 100, 0.8)) drop-shadow(0 8px 12px rgba(0, 30, 80, 0.4));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name-glass { transition: none; }
+  .satellite span {
+    animation: none;
+    transform: translate(calc((var(--sky-left) + var(--sky-right)) / 2), calc(var(--sky-top) + var(--sky-height) * 0.45)) rotate(-12deg);
+  }
+}

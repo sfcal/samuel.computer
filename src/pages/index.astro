@@ -1,0 +1,77 @@
+---
+// Home: the night sky, the Moon and the hills; scrolling brings on the day,
+// and with it the house and the name.
+import Base from '../layouts/Base.astro';
+import '../styles/home.css';
+---
+
+<Base home>
+  <main>
+    <h1 class="unseen">Samuel Calvert</h1>
+  </main>
+
+  <div class="planet" id="planet" aria-hidden="true">
+    <div class="moon" id="moon"><canvas></canvas></div>
+  </div>
+  <div class="satellite" aria-hidden="true"><span>🛰️</span></div>
+  <div class="house" id="house" aria-hidden="true">🏠</div>
+  <div class="hills" id="hills" aria-hidden="true"><canvas></canvas></div>
+  <div class="name" id="name" aria-hidden="true">
+    <div class="name-glass"></div>
+    <svg>
+      <defs>
+        <clipPath id="name-clip"><use href="#name-text"></use></clipPath>
+        {/* The bar's edge treatment, for letters: a thin pale line all round, a
+            bright line where light catches the top edges, a fainter one along the
+            bottom, a soft glow inside the top and a soft shade inside the bottom.
+            Built from the letters' solid silhouette; sizes are set by script. */}
+        <filter id="name-edges" x="-10%" y="-25%" width="120%" height="150%" color-interpolation-filters="sRGB">
+          <feMorphology in="SourceAlpha" operator="erode" radius="1" result="inside"></feMorphology>
+          <feComposite in="SourceAlpha" in2="inside" operator="out" result="line-shape"></feComposite>
+          <feFlood flood-color="#ffffff" flood-opacity="0.4"></feFlood>
+          <feComposite in2="line-shape" operator="in" result="line"></feComposite>
+
+          <feOffset in="SourceAlpha" dy="2" result="down"></feOffset>
+          <feComposite in="SourceAlpha" in2="down" operator="out" result="top-shape"></feComposite>
+          <feGaussianBlur in="top-shape" stdDeviation="0.6" result="top-soft"></feGaussianBlur>
+          <feComposite in="top-soft" in2="SourceAlpha" operator="in" result="top-inside"></feComposite>
+          <feFlood flood-color="#ffffff" flood-opacity="0.9"></feFlood>
+          <feComposite in2="top-inside" operator="in" result="top-line"></feComposite>
+
+          <feOffset in="SourceAlpha" dy="-1.6" result="up"></feOffset>
+          <feComposite in="SourceAlpha" in2="up" operator="out" result="bottom-shape"></feComposite>
+          <feFlood flood-color="#ffffff" flood-opacity="0.4"></feFlood>
+          <feComposite in2="bottom-shape" operator="in" result="bottom-line"></feComposite>
+
+          <feOffset id="edge-glow-shift" in="SourceAlpha" dy="10" result="far-down"></feOffset>
+          <feComposite in="SourceAlpha" in2="far-down" operator="out" result="glow-shape"></feComposite>
+          <feGaussianBlur id="edge-glow-soft" in="glow-shape" stdDeviation="6" result="glow-soft"></feGaussianBlur>
+          <feComposite in="glow-soft" in2="SourceAlpha" operator="in" result="glow-inside"></feComposite>
+          <feFlood flood-color="#ffffff" flood-opacity="0.45"></feFlood>
+          <feComposite in2="glow-inside" operator="in" result="glow"></feComposite>
+
+          <feOffset id="edge-shade-shift" in="SourceAlpha" dy="-9" result="far-up"></feOffset>
+          <feComposite in="SourceAlpha" in2="far-up" operator="out" result="shade-shape"></feComposite>
+          <feGaussianBlur id="edge-shade-soft" in="shade-shape" stdDeviation="6" result="shade-soft"></feGaussianBlur>
+          <feComposite in="shade-soft" in2="SourceAlpha" operator="in" result="shade-inside"></feComposite>
+          <feFlood flood-color="#003c82" flood-opacity="0.22"></feFlood>
+          <feComposite in2="shade-inside" operator="in" result="shade"></feComposite>
+
+          <feMerge>
+            <feMergeNode in="shade"></feMergeNode><feMergeNode in="glow"></feMergeNode><feMergeNode in="line"></feMergeNode>
+            <feMergeNode in="bottom-line"></feMergeNode><feMergeNode in="top-line"></feMergeNode>
+          </feMerge>
+        </filter>
+      </defs>
+      <g fill="none">
+        {/* the typeface is set here, not in the stylesheet, so that both uses of the text carry it */}
+        <text id="name-text" text-anchor="middle" style="font-family: var(--font-display); font-weight: 700">Samuel Calvert</text>
+      </g>
+      <use href="#name-text" fill="#fff" filter="url(#name-edges)"></use>
+    </svg>
+  </div>
+
+  <script>
+    import '../scripts/home.js';
+  </script>
+</Base>

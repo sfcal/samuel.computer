@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { isoDate } from '../../posts.js';
+import '../../styles/pages.css';
+
+const posts = (await getCollection('writing')).sort((a, b) => +b.data.date - +a.data.date);
+---
+
+<Base title="Writing" section="writing">
+  <main class="page" id="content">
+    <div class="column">
+      <h1 class="unseen">Writing</h1>
+      {posts.map(post => (
+        <article class="post">
+          <h2><a href={`/writing/${post.id}/`}>{post.data.title}</a></h2>
+          <p class="meta">
+            <time datetime={isoDate(post)}>{isoDate(post)}</time>
+            {post.data.tags.map(tag => <span class="tag">#{tag}</span>)}
+          </p>
+          <p class="summary">{post.data.excerpt}</p>
+          <a class="more" href={`/writing/${post.id}/`} aria-label={`Read more: ${post.data.title}`}>Read more →</a>
+        </article>
+      ))}
+    </div>
+  </main>
+</Base>

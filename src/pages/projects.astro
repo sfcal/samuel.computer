@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { projects } from '../data/projects.js';
+import '../styles/pages.css';
+
+// links that leave the site open in a new tab
+const out = (href: string) => (href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {});
+---
+
+<Base title="Projects" section="projects">
+  <main class="page" id="content">
+    <div class="column projects">
+      <h1 class="unseen">Projects</h1>
+      {projects.map(project => (
+        <article class="post project">
+          <h2><a href={project.links[0].href} {...out(project.links[0].href)}>{project.title}</a></h2>
+          <p class="summary">{project.summary}</p>
+          <ul>{project.points.map(point => <li>{point}</li>)}</ul>
+          <p class="stack">Tech stack:</p>
+          <p class="tags">{project.stack.map(tech => <span class="tag">{tech}</span>)}</p>
+          <p class="actions">
+            {project.links.map(link => (
+              <a class="more" href={link.href} {...out(link.href)} aria-label={`${link.label}: ${project.title}`}>{link.label} →</a>
+            ))}
+          </p>
+        </article>
+      ))}
+    </div>
+  </main>
+</Base>
