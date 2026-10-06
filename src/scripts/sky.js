@@ -13,6 +13,8 @@ const STAR_TILE = 640;            // height of the star tile as drawn
 const STAR_SPEED = 0.5;           // the stars are far away, so they drift at half speed
 const FADE = 1500;                // pixels of scrolling from full night to full day
 const DRIFT = 0.25;               // how much of a page's own scroll the sky follows
+// Base.astro places the layers before the first paint with copies of TILE,
+// STAR_TILE, STAR_SPEED, FADE and the easing in place(): change them there too
 
 export const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -128,6 +130,6 @@ function restore() {
   sky.scrolled = target = recall().scrolled ?? FADE;     // a first visit starts in daylight
   place();
 }
-keep(() => ({ scrolled: glide ? glide.to : target, day: sky.day }));
+keep(() => ({ scrolled: glide ? glide.to : target }));
 addEventListener('pageshow', e => { if (e.persisted) restore(); });   // Back, to a page the browser kept alive
 restore();

@@ -74,6 +74,7 @@ body {
   width: 100%;
   height: calc(100% + 181px);
   background: url("../assets/sky/clouds.webp") repeat;
+  transform: translate3d(0, var(--clouds-y, 0px), 0);   /* where the last page left it (set in Base.astro); script takes over */
   will-change: transform;
 }
 
@@ -87,6 +88,7 @@ body {
   background: #000 url("../assets/sky/stars.png") repeat;
   background-size: 640px 640px;   /* drawn at 2x, so each star pixel is a chunky square */
   opacity: calc(1 - var(--day));
+  transform: translate3d(0, var(--stars-y, 0px), 0);
   will-change: transform, opacity;
 }
 

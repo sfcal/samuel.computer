@@ -74,12 +74,24 @@ const structured = published
     {home && <Font cssVariable="--font-display" />}
 
     {/* Before anything is painted, put the sky back as the last page left it
-        (see scripts/state.js); a first visit starts in daylight. */}
+        (see scripts/state.js); a first visit starts in daylight. Everything is
+        worked out from the one saved number, how far the sky has scrolled,
+        exactly as scripts/sky.js will work it out again when it runs (the
+        tile sizes, the fade length and the easing are copied from there), so
+        the first frame and every frame after it agree: nothing jumps or flips
+        when the script takes over. */}
     <script is:inline>
       try {
-        const { day = 1 } = JSON.parse(sessionStorage.getItem('scene')) ?? {};
-        if (day !== 1) document.documentElement.style.setProperty('--day', day);
-        if (day < 0.5) document.documentElement.classList.add('night');
+        const { scrolled = 1500 } = JSON.parse(sessionStorage.getItem('scene')) ?? {};
+        const root = document.documentElement;
+        const t = Math.min(1, scrolled / 1500);
+        const day = Math.round(t * t * (3 - 2 * t) * 500) / 500;
+        if (day !== 1) root.style.setProperty('--day', day);
+        if (day < 0.5) root.classList.add('night');
+        const dpr = devicePixelRatio || 1;
+        const at = (offset, tile) => -Math.round((offset % tile) * dpr) / dpr + 'px';
+        root.style.setProperty('--clouds-y', at(scrolled, 181));
+        root.style.setProperty('--stars-y', at(scrolled * 0.5, 640));
       } catch {}
     </script>
     {/* where the browser offers it, fetch a page of this site as soon as its link is hovered */}
