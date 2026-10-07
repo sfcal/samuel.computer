@@ -1,12 +1,10 @@
 // Moon: the full Moon, near side facing, gently wobbling, as a sphere of text
 // characters. Where the browser has WebGPU, a shader adds the glow.
-import { reducedMotion, sky, watch } from '../sky.js';
+import { reducedMotion, sky, smoothstep, watch } from '../sky.js';
 import { every } from '../ticker.js';
 
 const box = document.getElementById('planet');
-const holder = document.getElementById('moon');   // where the Moon's canvas goes
 const hdrDisplay = matchMedia('(dynamic-range: high)');
-const STAR_SPEED = 0.5;           // the Moon drifts with the stars, at half speed (as in sky.js)
 const COLS = 40;                  // characters across the globe
 const CELL_ASPECT = 0.7;          // cell width over height: rows packed tight, as in a dense terminal
 const SPREAD = 1.3;               // the canvas is this many globes wide (see the CSS)
@@ -19,9 +17,8 @@ const NOD = { degrees: 3, seconds: 19 };
 const FRAME_MS = 66;              // 15 frames a second suits text animation
 const HDR_GAIN = 1.75;            // encoded-value boost for the brightest glyphs on an HDR
                                   // display; about 3.8x the luminance of SDR white
-// the site's monospace face, under whatever name the page's styles load it
-const FONT = getComputedStyle(document.documentElement).getPropertyValue('--font-mono').trim()
-  || '"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace';
+// the site's monospace face, read from the styles so the stack is written once (--font-mono in base.css)
+const FONT = getComputedStyle(document.documentElement).getPropertyValue('--font-mono').trim();
 const RAMP = '.:-=+tvcxoB8%W#M@';  // characters from faintest to brightest
 const DISC = '#030304';
 const DEG = Math.PI / 180;
@@ -116,14 +113,10 @@ function fbm(x, y, z, octaves) {
   return sum / total;
 }
 
-const step = (lo, hi, v) => { const k = Math.min(1, Math.max(0, (v - lo) / (hi - lo))); return k * k * (3 - 2 * k); };
 const dot = (a, x, y, z) => a[0] * x + a[1] * y + a[2] * z;
 
 // The Moon's surface at a latitude and longitude (degrees): brightness 0 to 1,
-// how much of the spot is mare, and that mare's tint. The three numbers are
-// left in `spot` rather than handed back as a new list, because this is asked
-// for every cell of every frame.
-const spot = new Float64Array(3);
+// how much of the spot is mare, and that mare's tint.
 function surface(lat, lon) {
   const cosLat = Math.cos(lat * DEG), y = Math.sin(lat * DEG);
   const x = cosLat * Math.sin(lon * DEG), z = cosLat * Math.cos(lon * DEG);
@@ -134,7 +127,7 @@ function surface(lat, lon) {
   for (const m of MARIA) {
     if (dot(m.c, x, y, z) < m.reach) continue;
     const up = Math.asin(dot(m.n, x, y, z)) / DEG, across = Math.asin(dot(m.e, x, y, z)) / DEG;
-    const inside = 1 - step(0.7, 1.15, (up / m.high) ** 2 + (across / m.wide) ** 2 + ragged);
+    const inside = 1 - smoothstep(0.7, 1.15, (up / m.high) ** 2 + (across / m.wide) ** 2 + ragged);
     if (inside <= 0) continue;
     mare = Math.max(mare, inside);
     shade += m.shade * inside; tint += m.tint * inside; weight += inside;
@@ -152,13 +145,13 @@ function surface(lat, lon) {
     if (along < r.reach) continue;
     const away = Math.acos(Math.min(1, along)) / DEG;
     const bearing = Math.atan2(dot(r.e, x, y, z), dot(r.n, x, y, z));
-    const streak = step(0.54, 0.7, noise(Math.cos(bearing) * 6.2 + r.id * 13.1, Math.sin(bearing) * 6.2 + r.id * 7.3, 0.5));
+    const streak = smoothstep(0.54, 0.7, noise(Math.cos(bearing) * 6.2 + r.id * 13.1, Math.sin(bearing) * 6.2 + r.id * 7.3, 0.5));
     const fade = Math.pow(1 - away / r.rays, 1.5);
-    const apron = 1 - step(r.core, r.core * 3.2, away);
+    const apron = 1 - smoothstep(r.core, r.core * 3.2, away);
     bright += r.strength * (0.36 * streak * fade + 0.14 * apron);
-    bright += (1 - bright) * (1 - step(r.core * 0.6, r.core * 1.5, away)) * r.strength;
+    bright += (1 - bright) * (1 - smoothstep(r.core * 0.6, r.core * 1.5, away)) * r.strength;
   }
-  spot[0] = Math.min(1, Math.max(0, bright)); spot[1] = mare; spot[2] = tint;
+  return [Math.min(1, Math.max(0, bright)), mare, tint];
 }
 
 /* -- the characters, drawn with the ordinary 2D canvas -- */
@@ -190,7 +183,7 @@ function layoutCells() {
       cells.push({
         px, py,
         ox, oy, oz: nz,                            // where this cell looks, on an upright Moon
-        limb: step(0, 0.36, nz),                   // the rim fades, the face is evenly lit
+        limb: smoothstep(0, 0.36, nz),             // the rim fades, the face is evenly lit
       });
     }
   }
@@ -218,8 +211,7 @@ function drawGlyphs(ctx, seconds) {
   for (const c of cells) {
     const x = c.ox * cosR + c.oz * sinR, z1 = c.oz * cosR - c.ox * sinR;
     const y = c.oy * cosN - z1 * sinN, z = c.oy * sinN + z1 * cosN;
-    surface(Math.asin(Math.max(-1, Math.min(1, y))) / DEG, Math.atan2(x, z) / DEG);
-    const bright = spot[0], mare = spot[1], tint = spot[2];
+    const [bright, mare, tint] = surface(Math.asin(Math.max(-1, Math.min(1, y))) / DEG, Math.atan2(x, z) / DEG);
     const index = Math.min(RAMP.length - 1, Math.floor(Math.pow(bright, 0.85) * c.limb * RAMP.length));
     // warm grey highlands; each mare leans brown or blue, as in enhanced-colour photographs
     const level = 60 + 195 * bright;
@@ -229,7 +221,6 @@ function drawGlyphs(ctx, seconds) {
     ctx.fillStyle = 'rgb(' + (r | 0) + ',' + (g | 0) + ',' + (b | 0) + ')';
     ctx.fillText(RAMP[index], c.px, c.py);
   }
-  ctx.globalAlpha = 1;
 }
 
 /* -- the glow: a GPU shader over those characters -- */
@@ -251,7 +242,7 @@ const SHADER = `
     return out;
   }
 
-  const GLOBE = 0.3846;                       // globe radius as a fraction of the canvas
+  const GLOBE = ${(0.5 / SPREAD).toFixed(4)}; // globe radius as a fraction of the canvas: half of one SPREAD
   const SHINE = vec3f(0.78, 0.82, 0.92);      // pale moonlight
 
   fn tap(uv: vec2f) -> vec4f { return textureSampleLevel(glyphs, glyphSampler, uv, 0.0); }
@@ -305,7 +296,6 @@ async function startShader() {
 /* -- putting it on screen -- */
 let paint = null;                 // draws the Moon; set once a renderer is chosen
 let rebuild = null;               // sizes that renderer's canvases to the box
-let inView = true;                // false once the box has drifted off the top of the window
 let showing = false;              // whether the Moon can be seen, and so is being drawn
 
 // With reduced motion the Moon holds still, redrawn once a second only so a
@@ -320,10 +310,9 @@ function pace() {
   if (showing) (reducedMotion.matches ? still : moving).start();
 }
 
-// Draw only while the Moon can be seen: not once day has faded it out, nor
-// after it has drifted off the top of the window.
+// draw only while the Moon can be seen, that is until day has faded it out
 function show() {
-  const visible = sky.day < 1 && inView;
+  const visible = sky.day < 1;
   if (visible !== showing) { showing = visible; pace(); }
 }
 
@@ -336,7 +325,7 @@ function redraw() {
 // but the cells, the canvas and the GPU's texture are only rebuilt if it has.
 function fit() {
   const width = box.clientWidth;
-  const across = Math.max(2, Math.round(width * Math.min(devicePixelRatio || 1, 2)));
+  const across = Math.max(2, Math.round(width * Math.min(devicePixelRatio, 2)));
   if (width === side && across === pixels) return;
   side = width;
   pixels = across;
@@ -351,7 +340,7 @@ function useCanvas() {
   const ctx = canvas.getContext('2d');
   rebuild = () => { canvas.width = canvas.height = pixels; };
   paint = seconds => drawGlyphs(ctx, seconds);
-  holder.replaceChildren(canvas);
+  box.replaceChildren(canvas);
   box.classList.add('flat');
 }
 
@@ -363,8 +352,10 @@ function useShader({ device, pipeline }) {
   const glyphCtx = glyphCanvas.getContext('2d');
   const uniforms = device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
   const sampler = device.createSampler({ magFilter: 'linear', minFilter: 'linear' });
-  let texture = null, bindGroup = null, hdr = null;
+  let texture = null, bindGroup = null;
 
+  // Set up the canvas for the display it is on. The configuration survives a
+  // resize, so this is only asked again when the display's range changes.
   function configure() {
     const wanted = hdrDisplay.matches ? 'extended' : 'standard';
     context.configure({
@@ -372,18 +363,12 @@ function useShader({ device, pipeline }) {
       colorSpace: 'display-p3', toneMapping: { mode: wanted },
     });
     // browsers without HDR canvases quietly keep "standard"; ask what we got
-    const got = context.getConfiguration ? context.getConfiguration() : null;
-    const extended = wanted === 'extended' && !!got && !!got.toneMapping && got.toneMapping.mode === 'extended';
-    if (extended === hdr) return;
-    hdr = extended;
-    box.dataset.hdr = hdr ? 'on' : 'off';
-    // the gain is all the shader is told, so it is sent when it changes and not with every frame
-    device.queue.writeBuffer(uniforms, 0, new Float32Array([hdr ? HDR_GAIN : 1, 0, 0, 0]));
+    const extended = wanted === 'extended' && context.getConfiguration().toneMapping?.mode === 'extended';
+    device.queue.writeBuffer(uniforms, 0, new Float32Array([extended ? HDR_GAIN : 1, 0, 0, 0]));
   }
 
   function size() {
     canvas.width = canvas.height = glyphCanvas.width = glyphCanvas.height = pixels;
-    configure();
     if (texture) texture.destroy();
     texture = device.createTexture({
       size: [pixels, pixels], format: 'rgba8unorm',
@@ -398,13 +383,13 @@ function useShader({ device, pipeline }) {
       ],
     });
   }
+  size();
   // Before anything is swapped: a browser whose WebGPU cannot make this kind
   // of canvas says so here, and the plain renderer carries on.
-  size();
+  configure();
 
   rebuild = size;
   paint = seconds => {
-    if (!side) return;
     drawGlyphs(glyphCtx, seconds);
     device.queue.copyExternalImageToTexture({ source: glyphCanvas }, { texture, premultipliedAlpha: true }, [pixels, pixels]);
     const encoder = device.createCommandEncoder();
@@ -422,9 +407,9 @@ function useShader({ device, pipeline }) {
   };
 
   // e.g. the window moved to another display: its range, and perhaps its pixels, are different
-  hdrDisplay.addEventListener('change', () => { fit(); rebuild(); redraw(); });
+  hdrDisplay.addEventListener('change', () => { fit(); configure(); redraw(); });
   device.lost.then(() => { useCanvas(); rebuild(); redraw(); });   // fall back if the GPU goes away
-  holder.replaceChildren(canvas);
+  box.replaceChildren(canvas);
   box.classList.remove('flat');
   redraw();
 }
@@ -438,12 +423,4 @@ addEventListener('resize', fit);                     // a zoom can change the pi
 reducedMotion.addEventListener('change', pace);
 document.fonts.load('700 16px ' + FONT, RAMP).then(redraw, () => {});   // the first frames may come before the font
 
-// the Moon belongs to the night sky, so it drifts with the stars
-let drift = null;
-watch(() => {
-  const y = -Math.round(sky.scrolled * STAR_SPEED);
-  if (y !== drift) { drift = y; box.style.transform = `translate3d(0,${y}px,0)`; }
-  show();
-});
-// in a small window that drift carries it out of sight well before day does
-new IntersectionObserver(entries => { inView = entries.at(-1).isIntersecting; show(); }).observe(box);
+watch(show);                                         // day fades the Moon out; night brings it back

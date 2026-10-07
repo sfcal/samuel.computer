@@ -1,8 +1,7 @@
-// Hills: layered sine-wave ridges, dithered down to two colours.
-import { reducedMotion } from '../sky.js';
-import { keep, recall } from '../state.js';
+// Hills: layered sine-wave ridges, dithered down to two colours, with the
+// house seated on their skyline.
+import { reducedMotion, sky, watch } from '../sky.js';
 import { every } from '../ticker.js';
-import { seat } from './house.js';
 
 const box = document.getElementById('hills');
 const canvas = box.firstElementChild;
@@ -14,9 +13,6 @@ const TAU = Math.PI * 2;
 // the only two colours used: a pale leaf "paper" and a deep green "ink"
 const LIGHT = 0xff000000 | (0xb5 << 16) | (0xf2 << 8) | 0xe6;   // #e6f2b5
 const DARK  = 0xff000000 | (0x1a << 16) | (0x55 << 8) | 0x34;   // #34551a
-// the pair as a table (0 dark, 1 light). Whether a dot is light is a coin toss
-// the processor cannot guess, so its colour is looked up, not branched on.
-const SHADE = Uint32Array.of(DARK, LIGHT);
 // 8x8 ordered-dither thresholds; fixed to the screen, so the dots hold
 // still while the ridges move through them
 const BAYER = Float64Array.from([
@@ -26,11 +22,9 @@ const BAYER = Float64Array.from([
   15, 47,  7, 39, 13, 45,  5, 37,   63, 31, 55, 23, 61, 29, 53, 21,
 ], v => (v + 0.5) / 64);
 
-// The same hills for the whole visit: their random numbers come from a small
-// seeded generator (mulberry32), and the seed is carried from page to page.
-const seed = recall().hills ?? Math.floor(Math.random() * 2 ** 32);
-keep(() => ({ hills: seed }));
-let state = seed;
+// The same hills on every visit: their random numbers come from a small
+// seeded generator (mulberry32) with a fixed seed, as the Moon's noise does.
+let state = 1969;
 function random() {
   let t = state += 0x6D2B79F5;
   t = Math.imul(t ^ t >>> 15, t | 1);
@@ -108,7 +102,7 @@ function draw(seconds) {
       pixels[from * cols + x] = layer.line;           // that first dot is the outline
       for (let y = from + 1, p = y * cols + x; y < end; y++, p += cols) {
         const tone = layer.tone + 0.3 * Math.max(0, 1 - (y - r) / glow);
-        pixels[p] = SHADE[+(tone > BAYER[(y & 7) * 8 + (x & 7)])];
+        pixels[p] = tone > BAYER[(y & 7) * 8 + (x & 7)] ? LIGHT : DARK;
       }
       end = from;
     }
@@ -116,7 +110,7 @@ function draw(seconds) {
     for (let y = 0; y < end; y++) pixels[y * cols + x] = 0;
   }
   ctx.putImageData(image, 0, 0);
-  seat(skyline, DOT, rows);     // the house sits on the skyline
+  seat();                       // the house sits on the skyline
 }
 
 const loop = every(FRAME_MS, now => draw(now / 1000));
@@ -131,3 +125,48 @@ function run() {
 
 new ResizeObserver(run).observe(box);       // also reports the size the box starts with
 reducedMotion.addEventListener('change', run);
+
+/* -- The house: pops up from behind the hills as the sky turns to day. The
+   hills hide its foot, so it is seated on their skyline and bobs as the
+   ridges sway. -- */
+
+const house = document.getElementById('house');
+const RISE_FROM = 0.25, RISE_TO = 0.8;   // the stretch of the night-to-day fade over which it rises
+const SUNK = 0.2;                        // share of the house left hidden behind the ridge, so it sits in the land
+
+// ease that overshoots a little, so the house springs up and settles
+const pop = k => 1 + 2.4 * Math.pow(k - 1, 3) + 1.4 * Math.pow(k - 1, 2);
+
+let houseLeft = 0, houseSize = 0;        // where the house stands and how wide it is; only a resize changes these
+let shown = null;                        // the move last written to the page
+
+function seat() {
+  if (!image) return;                    // the hills have not been drawn yet
+  // the lowest point of the skyline across the house's width: its foot hides behind that
+  const from = Math.max(0, Math.floor(houseLeft / DOT));
+  const to = Math.min(cols - 1, Math.ceil((houseLeft + houseSize) / DOT));
+  let low = 0;
+  for (let x = from; x <= to; x++) if (skyline[x] > low) low = skyline[x];
+  const bottom = Math.round((rows - low) * DOT - houseSize * SUNK);
+
+  const k = Math.min(1, Math.max(0, (sky.day - RISE_FROM) / (RISE_TO - RISE_FROM)));
+  const up = reducedMotion.matches ? k : pop(k);
+  const drop = Math.round((1 - up) * houseSize * 1.3);     // fully down, its roof is below the skyline
+
+  // one move from the foot of the screen does both: up to its seat, down by the drop
+  const y = drop - bottom;
+  if (y !== shown) {
+    shown = y;
+    house.style.transform = 'translate3d(0,' + y + 'px,0)';
+  }
+}
+
+// reading layout is costly, so do it here and not on every frame
+function measure() {
+  houseLeft = house.offsetLeft;
+  houseSize = house.offsetWidth;
+  seat();
+}
+addEventListener('resize', measure);
+measure();
+watch(seat);                             // rise with the day even while the hills hold still

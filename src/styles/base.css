@@ -1,6 +1,10 @@
-/* What every page shares: the palette, the sky behind and the header bar on top. */
+/* What every page shares: the palette, the sky behind and the header bar on top;
+   then the projects and writing pages, which are cards over that sky. */
 
 :root {
+  /* the typefaces, by their @fontsource family names (see Base.astro) */
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --sky: #8bbce2;
   --day: 1;                   /* 0 at the starry top of the scroll, 1 once the clouds are fully in; set by script */
   /* header bar: text, logo and button colours (day) */
@@ -14,20 +18,22 @@
   --text: #34551a;
   --tag: rgba(52, 85, 26, 0.14);
   --rule: rgba(52, 85, 26, 0.35);              /* table lines, quote bars */
-  --card-glow: 0 0 0 transparent;
   /* glass */
   --glass-tint: rgba(255, 255, 255, 0.42);
-  --name-tint: rgba(255, 255, 255, 0.9);       /* the big name: the bar's glass, tinted much heavier so it reads */
-  --glass-rim: rgba(255, 255, 255, 0.85);
-  /* layout: the header bar runs the full width with the same small gap on every side */
+  /* layout: the header bar runs the full width with the same small gap on every
+     side, and keeps clear of a phone's notch; its four edges are named here so
+     that whatever lines up with the bar says so */
   --gap: 16px;                              /* between the bar and the window's edges */
   --bar-height: 70px;
+  --bar-top: calc(var(--gap) + env(safe-area-inset-top));
+  --bar-left: calc(var(--gap) + env(safe-area-inset-left));
+  --bar-right: calc(var(--gap) + env(safe-area-inset-right));
+  --bar-bottom: calc(var(--bar-top) + var(--bar-height));
 
   /* the page is a fixed palette in either viewer theme */
   color-scheme: only light;
-  box-sizing: border-box;
   /* anything scrolled into view stops clear of the bar */
-  scroll-padding-top: calc(var(--gap) + env(safe-area-inset-top, 0px) + var(--bar-height) + 16px);
+  scroll-padding-top: calc(var(--bar-bottom) + 16px);
 }
 /* while the stars are out, the glass takes a dark tint and text turns light;
    script flips this class at the midpoint of the fade */
@@ -44,51 +50,39 @@
   --text: #e6f2b5;
   --tag: rgba(230, 242, 181, 0.16);
   --rule: rgba(230, 242, 181, 0.35);
-  /* The alternative night palette, the Moon's colours (slate of its darkest sea,
-     white of its ray craters, a little of its glow). To try it again, swap these
-     five lines with the five above:
-  --card: #5e656f;
-  --text: #fff7f0;
-  --tag: rgba(255, 247, 240, 0.14);
-  --rule: rgba(255, 247, 240, 0.32);
-  --card-glow: 0 0 28px rgba(199, 209, 235, 0.16);
-  */
   --glass-tint: rgba(17, 24, 39, 0.5);
-  --name-tint: rgba(17, 24, 39, 0.9);
 }
-*, *::before, *::after { box-sizing: inherit; }
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
   margin: 0;
   background: var(--sky);
-  image-rendering: pixelated;
   color: var(--ink);
   font: 400 16px/1.5 var(--font-sans);
 }
 
+/* the two sky layers: pixel-art tiles, scaled up with hard edges rather than smoothed */
+.clouds, .stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  image-rendering: pixelated;
+}
 /* the cloud layer: one tile taller than the window, slid up and down by script */
 .clouds {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
   height: calc(100% + 181px);
   background: url("../assets/sky/clouds.webp") repeat;
-  transform: translate3d(0, var(--clouds-y, 0px), 0);   /* where the last page left it (set in Base.astro); script takes over */
+  transform: translate3d(0, var(--clouds-y, -52px), 0);   /* where the last page left it (put back in Base.astro, then kept up by sky.js); the fallback is a first visit's daylight, 1500 % 181 from FADE and TILE there */
   will-change: transform;
 }
-
 /* the star field sits over the clouds and fades away as the day comes */
 .stars {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
   height: calc(100% + 640px);
   background: #000 url("../assets/sky/stars.png") repeat;
   background-size: 640px 640px;   /* drawn at 2x, so each star pixel is a chunky square */
   opacity: calc(1 - var(--day));
-  transform: translate3d(0, var(--stars-y, 0px), 0);
+  transform: translate3d(0, var(--stars-y, -110px), 0);   /* as above; 1500 * 0.5 % 640 from FADE, STAR_SPEED and STAR_TILE in sky.js */
   will-change: transform, opacity;
 }
 
@@ -97,9 +91,9 @@ body {
 .bar {
   position: fixed;
   z-index: 10;
-  top: calc(var(--gap) + env(safe-area-inset-top, 0px));
-  left: calc(var(--gap) + env(safe-area-inset-left, 0px));
-  right: calc(var(--gap) + env(safe-area-inset-right, 0px));
+  top: var(--bar-top);
+  left: var(--bar-left);
+  right: var(--bar-right);
   height: var(--bar-height);
   border-radius: 16px;
   /* the drop shadow lives out here: on the glass itself it would throw off
@@ -112,15 +106,13 @@ body {
   height: 100%;
   padding: 0 24px;
   border-radius: inherit;
-  image-rendering: auto;
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 62%);
   background-color: var(--glass-tint);
   transition: background-color 0.5s;
-  -webkit-backdrop-filter: blur(10px) saturate(1.5);
   backdrop-filter: blur(10px) saturate(1.5);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.26),
-    inset 0 1.5px 1px var(--glass-rim),
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.85),
     inset 1.5px 0 1px -0.5px rgba(255, 255, 255, 0.5),
     inset 0 -1.5px 1px rgba(255, 255, 255, 0.35),
     inset 0 10px 16px -10px rgba(255, 255, 255, 0.4),
@@ -134,7 +126,6 @@ body {
 /* what is in the bar: initials on the left, links and the day/night button on the right */
 .logo {
   background: var(--logo);
-  -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   font-size: 24px;
@@ -147,15 +138,16 @@ body {
   position: relative;
   flex: 1;
   align-self: stretch;
-  min-width: 0;
   margin: 0 16px;
   overflow: hidden;
-  pointer-events: none;
+  pointer-events: none;     /* so a right-click on the cow offers the page's menu, not the canvas's */
 }
 .pasture canvas {
   position: absolute;
   left: 0;
-  image-rendering: crisp-edges;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;       /* centred in the bar's height; cow.js sets the width and height */
   image-rendering: pixelated;
 }
 .links {
@@ -188,15 +180,15 @@ body {
 #phase:hover { background: var(--button-hover); }
 #phase svg { width: 20px; height: 20px; }
 /* the button offers the other half of the day: a sun at night, a moon by day */
-#phase .moon, :root.night #phase .sun { display: block; }
-#phase .sun, :root.night #phase .moon { display: none; }
+:root:not(.night) #phase .sun, :root.night #phase .moon { display: none; }
 .logo:focus-visible, .links a:focus-visible, #phase:focus-visible {
   outline: 2px solid var(--ink-strong);
   outline-offset: 3px;
   border-radius: 6px;
 }
 
-/* in the page for screen readers and search, but not drawn */
+/* in the page but not drawn: headings for screen readers and search, and the
+   SVG that only hosts the bar's refraction filter */
 .unseen {
   position: absolute;
   width: 1px;
@@ -207,18 +199,209 @@ body {
   white-space: nowrap;
 }
 
-.defs {
-  position: absolute;
-  width: 0;
-  height: 0;
-}
-
 /* on a narrow screen, tighten the spacing inside the bar so everything fits */
 @media (max-width: 700px) {
   .glass { padding: 0 16px; }
   .pasture { margin: 0 8px; }
   .links { gap: 20px; margin-right: 12px; }
 }
+
+/* The projects and writing pages (lists of cards, and each post): cards over
+   the bare sky, stars or clouds as it stood when you arrived. The page scrolls
+   in the ordinary way, passing under the header bar. */
+
+.page {
+  position: relative;         /* above the sky's layers, below the bar */
+  z-index: 5;
+  padding: calc(var(--bar-bottom) + 32px)
+           max(16px, env(safe-area-inset-right))
+           calc(48px + env(safe-area-inset-bottom))
+           max(16px, env(safe-area-inset-left));
+}
+
+/* for keyboards: the first Tab offers a way past the bar */
+.skip {
+  position: fixed;
+  z-index: 20;
+  top: var(--bar-top);
+  left: var(--bar-left);
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+  transform: translateY(-200%);
+}
+.skip:focus { transform: none; }
+
+.column {
+  display: grid;
+  gap: 32px;
+  max-width: 992px;
+  margin: 0 auto;
+}
+/* a card: a post in the list, a project, or the opened post's sheet */
+.post, .sheet {
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  color: var(--text);
+  transition: background-color 0.5s, color 0.5s;
+}
+.post { padding: 24px; }
+.post h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.4;
+}
+.post h2 a, .post .more {
+  color: inherit;             /* same ink as the text, so the line marks "Read more" as a link */
+  text-underline-offset: 3px;
+}
+.post h2 a { text-decoration: none; }
+.post h2 a:hover { text-decoration: underline; }
+.post .more:hover { text-decoration-thickness: 2px; }
+/* the date and tags under a title */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+}
+.post .meta { margin-top: 8px; }
+.meta time { margin-right: 8px; font-variant-numeric: tabular-nums; }
+.post .summary { margin: 16px 0; max-width: 75ch; }
+.post a:focus-visible {
+  outline: 2px solid var(--ink-strong);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* the projects page: the same cards, side by side in a grid, each with what the
+   project is, a few points, its tech stack and its links */
+.column.projects {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 24px;
+}
+.project {
+  display: flex;
+  flex-direction: column;
+}
+.project .summary { margin: 12px 0 0; }
+.project ul {
+  margin: 14px 0 0;
+  padding-left: 1.2em;
+  font-size: 15px;
+}
+.project li { margin: 4px 0; }
+.project .stack {
+  margin: 18px 0 8px;
+  font-size: 14px;
+}
+.project .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 20px;
+}
+.project .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin-top: auto;           /* links sit at the foot of the card, level across the row */
+  font-size: 15px;
+}
+
+/* one post, opened: a single sheet in the same two greens */
+.sheet {
+  max-width: 896px;
+  margin: 0 auto;
+  padding: 28px clamp(20px, 5vw, 48px) 36px;
+}
+.sheet a { color: inherit; text-underline-offset: 3px; }
+.sheet a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 4px; }
+.sheet .back { display: inline-block; font-size: 14px; }
+.sheet header { margin: 20px 0 28px; }
+.sheet h1 {
+  margin: 10px 0 14px;
+  font-size: clamp(28px, 5vw, 44px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.tag {
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--tag);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+/* a post's text, as written in Markdown (see src/markdown.js for what the build adds) */
+.prose {
+  font-size: 17px;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+.prose p { margin: 1.1em 0; }
+.prose h2 { margin: 2em 0 0.6em; font-size: 28px; line-height: 1.3; }
+.prose h3 { margin: 1.8em 0 0.5em; font-size: 22px; line-height: 1.35; }
+.prose h4 { margin: 1.6em 0 0.4em; font-size: 18px; line-height: 1.4; }
+.prose ul, .prose ol { margin: 1.1em 0; padding-left: 1.4em; }
+.prose li { margin: 0.35em 0; }
+.prose img, .prose video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.6em auto;
+  border-radius: 8px;
+}
+.prose blockquote {
+  margin: 1.5em 0;
+  padding: 0.1em 1.2em;
+  border-left: 4px solid var(--rule);
+}
+.prose blockquote h3 { margin: 0.6em 0; }
+.prose pre {
+  margin: 1.5em 0;
+  padding: 16px 18px;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: var(--tag);
+  font: 400 14px/1.6 var(--font-mono);
+  tab-size: 2;
+}
+.prose code { font-family: var(--font-mono); }
+.prose :not(pre) > code { font-size: 0.88em; padding: 1px 5px; border-radius: 4px; background: var(--tag); }
+.eq { margin: 1.3em 0; padding: 4px 0; overflow-x: auto; }
+/* a wide table scrolls inside the post instead of widening the page: the table
+   is its own scroll box, as wide as its content and no wider than the column.
+   The space around it is padding, not margin, so it does not collapse with the
+   neighbouring paragraphs' margins, as the gap did when a wrapper held it. */
+.prose table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1.5em 0;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+.prose th, .prose td { padding: 6px 14px; border: 1px solid var(--rule); text-align: center; }
+.prose th { background: var(--tag); }
+/* maths is MathML, drawn by the browser in the system's own maths face */
+.prose math { font-family: "STIX Two Math", "Cambria Math", "Noto Sans Math", "Latin Modern Math", math; font-size: 1.1em; }
+.prose details {
+  margin: 1.6em 0;
+  padding: 12px 20px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+}
+.prose summary { cursor: pointer; font-weight: 700; }
+.prose + .back { margin-top: 28px; }
+
 @media (prefers-reduced-motion: reduce) {
-  .glass, .links a, #phase { transition: none; }
+  .glass, .links a, #phase, .post, .sheet { transition: none; }
 }

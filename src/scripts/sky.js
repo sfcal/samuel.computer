@@ -1,22 +1,22 @@
 // The sky: stars above, clouds below, and how far between them the page has
 // turned. The bar's button moves it on every page; on the home page scrolling
 // input does too (see home/input.js). Everything else follows from here: the
-// styles read --day, and scripts watch().
-import { keep, recall } from './state.js';
+// styles read --day, --scrolled and the layers' offsets, and scripts watch().
 
 const root = document.documentElement;
-const clouds = document.getElementById('clouds');
-const stars = document.getElementById('stars');
 const phase = document.getElementById('phase');
 const TILE = 181;                 // height of the cloud tile, in CSS pixels
 const STAR_TILE = 640;            // height of the star tile as drawn
-const STAR_SPEED = 0.5;           // the stars are far away, so they drift at half speed
+const STAR_SPEED = 0.5;           // the stars are far away, so they drift at half speed (home.css moves the Moon at the same rate)
 const FADE = 1500;                // pixels of scrolling from full night to full day
 const DRIFT = 0.25;               // how much of a page's own scroll the sky follows
-// Base.astro places the layers before the first paint with copies of TILE,
-// STAR_TILE, STAR_SPEED, FADE and the easing in place(): change them there too
+// base.css falls back to where TILE, STAR_TILE, STAR_SPEED and FADE put a first visit's layers (-52px, -110px): change it there too
 
 export const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+// the ease behind every move of the sky, and much of the Moon's shading: 0 up
+// to `lo`, 1 from `hi` on, and a slow-in slow-out curve between
+export const smoothstep = (lo, hi, v) => { const k = Math.min(1, Math.max(0, (v - lo) / (hi - lo))); return k * k * (3 - 2 * k); };
 
 // For other scripts to read, never to write: pixels scrolled, the eased
 // fraction of day (0 under the stars, 1 once the clouds are fully in), and
@@ -36,20 +36,19 @@ export function watch(fn) {
   fn(sky);
 }
 
+// how far toward day the sky has turned, from pixels scrolled
+const dayOf = scrolled => smoothstep(0, FADE, scrolled);
+
 // a repeating layer only needs its offset within one tile; snap that to whole
 // device pixels to keep the pixel art crisp
-function slide(layer, offset, tile) {
-  const dpr = devicePixelRatio || 1;
-  const y = Math.round((offset % tile) * dpr) / dpr;
-  layer.style.transform = `translate3d(0,${-y}px,0)`;
-}
+const offsetOf = (offset, tile) => -Math.round((offset % tile) * devicePixelRatio) / devicePixelRatio + 'px';
 
 function place() {
-  slide(clouds, sky.scrolled + drift, TILE);
-  slide(stars, (sky.scrolled + drift) * STAR_SPEED, STAR_TILE);
+  root.style.setProperty('--scrolled', sky.scrolled);
+  root.style.setProperty('--clouds-y', offsetOf(sky.scrolled + drift, TILE));
+  root.style.setProperty('--stars-y', offsetOf((sky.scrolled + drift) * STAR_SPEED, STAR_TILE));
   // night at the top; the stars fade out and the clouds show through below
-  const t = Math.min(1, sky.scrolled / FADE);
-  const day = Math.round(t * t * (3 - 2 * t) * 500) / 500;    // eased, in small steps
+  const day = dayOf(sky.scrolled);
   if (day !== sky.day) {
     sky.day = day;
     root.style.setProperty('--day', day);
@@ -67,8 +66,8 @@ function step(now) {
   const dt = Math.min(50, now - lastTime);
   lastTime = now;
   if (glide) {
-    const k = Math.min(1, Math.max(0, (now - glide.start) / glide.ms));
-    sky.scrolled = target = glide.from + (glide.to - glide.from) * (k * k * (3 - 2 * k));
+    const k = smoothstep(glide.start, glide.start + glide.ms, now);
+    sky.scrolled = target = glide.from + (glide.to - glide.from) * k;
     if (k >= 1) glide = null;
   } else if (velocity) {
     target += velocity * dt;
@@ -125,11 +124,21 @@ phase.addEventListener('click', () => {
 // on a page that scrolls, the sky keeps its stars or clouds and only drifts a little
 addEventListener('scroll', () => { drift = Math.max(0, scrollY) * DRIFT; place(); }, { passive: true });
 
-// pick up where the last page left the sky, and leave it for the next one
+// Pick up where the last page left the sky, and leave it for the next one. The
+// record holds the tab's session, so a new visit starts again in daylight; it
+// keeps not just the number but what was painted from it, so the pre-paint
+// script in Base.astro can put the sky straight back without working anything out.
 function restore() {
-  sky.scrolled = target = recall().scrolled ?? FADE;     // a first visit starts in daylight
+  let saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem('sky')); } catch {}   // storage is blocked or the record is damaged: start fresh
+  sky.scrolled = target = saved?.scrolled ?? FADE;        // a first visit starts in daylight
   place();
 }
-keep(() => ({ scrolled: glide ? glide.to : target }));
+addEventListener('pagehide', () => {
+  const scrolled = glide ? glide.to : target;
+  const day = dayOf(scrolled);
+  const record = { scrolled, day, night: day < 0.5, cloudsY: offsetOf(scrolled, TILE), starsY: offsetOf(scrolled * STAR_SPEED, STAR_TILE) };
+  try { sessionStorage.setItem('sky', JSON.stringify(record)); } catch {}
+});
 addEventListener('pageshow', e => { if (e.persisted) restore(); });   // Back, to a page the browser kept alive
 restore();

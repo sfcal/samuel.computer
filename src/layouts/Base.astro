@@ -1,15 +1,25 @@
 ---
 // Every page: the document head, the header bar, and the sky behind it all.
-import { Font } from 'astro:assets';
 import '../styles/base.css';
+
+// The typefaces, served from this site: the Latin files of the @fontsource
+// packages, in just the weights the pages use (the home page adds DynaPuff for
+// the name). The woff2 files are imported by URL as well, so the preloads below
+// point at the same hashed address as the @font-face rules and nothing is
+// fetched twice.
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-700.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
+import '@fontsource/jetbrains-mono/latin-700.css';
+import inter400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
+import inter700 from '@fontsource/inter/files/inter-latin-700-normal.woff2?url';
+import mono700 from '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2?url';
 
 interface Props {
   title?: string;                       // omitted on the home page
   description?: string;
   image?: string;                       // shown when the page is shared
   published?: Date;                     // set on a post
-  section?: 'projects' | 'writing';     // which of the bar's links to mark
-  home?: boolean;
 }
 
 const NAME = 'Samuel Calvert';
@@ -18,10 +28,10 @@ const {
   description = 'Computer Engineering professional specializing in infrastructure automation, networking, and systems troubleshooting.',
   image = '/headshot.jpeg',
   published,
-  section,
-  home = false,
 } = Astro.props;
 
+const home = Astro.url.pathname === '/';
+const section = Astro.url.pathname.split('/')[1];   // which of the bar's links to mark
 const fullTitle = title ? `${title} | ${NAME}` : NAME;
 const url = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = new URL(image, Astro.site);
@@ -61,37 +71,32 @@ const structured = published
     {published && <meta property="article:published_time" content={published.toISOString()} />}
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(structured)} />
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png" />
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32" />
     <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="alternate" type="application/rss+xml" title={NAME} href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <Font cssVariable="--font-sans" preload />
+    <link rel="preload" href={inter400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={inter700} as="font" type="font/woff2" crossorigin />
     {/* the Moon is drawn in the bold monospace, so the home page wants it early */}
-    <Font cssVariable="--font-mono" preload={home && [{ weight: 700 }]} />
-    {home && <Font cssVariable="--font-display" />}
+    {home && <link rel="preload" href={mono700} as="font" type="font/woff2" crossorigin />}
 
-    {/* Before anything is painted, put the sky back as the last page left it
-        (see scripts/state.js); a first visit starts in daylight. Everything is
-        worked out from the one saved number, how far the sky has scrolled,
-        exactly as scripts/sky.js will work it out again when it runs (the
-        tile sizes, the fade length and the easing are copied from there), so
-        the first frame and every frame after it agree: nothing jumps or flips
-        when the script takes over. */}
+    {/* Before anything is painted, put the sky back as the last page left it.
+        That page saved, on leaving, the very values its script had painted
+        (see the pagehide listener in scripts/sky.js), so the first frame and
+        every frame after it agree: nothing jumps or flips when the script
+        takes over. A first visit, with nothing saved, starts in daylight: the
+        stylesheet's own defaults. */}
     <script is:inline>
       try {
-        const { scrolled = 1500 } = JSON.parse(sessionStorage.getItem('scene')) ?? {};
-        const root = document.documentElement;
-        const t = Math.min(1, scrolled / 1500);
-        const day = Math.round(t * t * (3 - 2 * t) * 500) / 500;
-        if (day !== 1) root.style.setProperty('--day', day);
-        if (day < 0.5) root.classList.add('night');
-        const dpr = devicePixelRatio || 1;
-        const at = (offset, tile) => -Math.round((offset % tile) * dpr) / dpr + 'px';
-        root.style.setProperty('--clouds-y', at(scrolled, 181));
-        root.style.setProperty('--stars-y', at(scrolled * 0.5, 640));
+        const saved = JSON.parse(sessionStorage.getItem('sky'));
+        if (saved?.cloudsY) {
+          const root = document.documentElement;
+          root.style.setProperty('--day', saved.day);
+          if (saved.night) root.classList.add('night');
+          root.style.setProperty('--clouds-y', saved.cloudsY);
+          root.style.setProperty('--stars-y', saved.starsY);
+        }
       } catch {}
     </script>
     {/* where the browser offers it, fetch a page of this site as soon as its link is hovered */}
@@ -102,10 +107,11 @@ const structured = published
   <body>
     {!home && <a class="skip" href="#content">Skip to content</a>}
 
-    <svg class="defs" aria-hidden="true">
+    <svg class="unseen" aria-hidden="true">
       <filter id="rim-refraction" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
         <feImage id="rim-map" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map"></feImage>
-        <feDisplacementMap in="SourceGraphic" in2="map" scale="0" xChannelSelector="R" yChannelSelector="B"></feDisplacementMap>
+        {/* the scale is twice the largest shift the map asks for: 1.3 x RIM in scripts/glass.js */}
+        <feDisplacementMap in="SourceGraphic" in2="map" scale="36.4" xChannelSelector="R" yChannelSelector="B"></feDisplacementMap>
       </filter>
     </svg>
 
@@ -116,7 +122,7 @@ const structured = published
         <div class="links">
           <a href="/projects/" aria-current={section === 'projects' ? 'page' : undefined}>Projects</a>
           <a href="/writing/" aria-current={section === 'writing' ? 'page' : undefined}>Writing</a>
-          <a href="/cv.pdf" target="_blank" rel="noopener noreferrer">CV</a>
+          <a href="/cv.pdf" target="_blank" rel="noreferrer">CV</a>
         </div>
         <button type="button" id="phase" aria-label="Switch to night">
           <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
@@ -125,13 +131,16 @@ const structured = published
       </nav>
     </header>
 
-    <div class="clouds" id="clouds" aria-hidden="true"></div>
-    <div class="stars" id="stars" aria-hidden="true"></div>
+    <div class="clouds" aria-hidden="true"></div>
+    <div class="stars" aria-hidden="true"></div>
 
     <slot />
 
     <script>
-      import '../scripts/site.js';
+      // what every page runs: the sky behind it and the header bar on top
+      import '../scripts/sky.js';
+      import '../scripts/cow.js';
+      import '../scripts/glass.js';
     </script>
   </body>
 </html>

@@ -16,7 +16,7 @@ $$
 
 It's okay if neither explanation makes sense yet. With each successive step into larger sets starting with the Naturals and moving up to the Reals we'll see that what once may have seemed like an arbitrary choice of algebraic manipulation is ultimately reinforcing a rich underlying structure.
 
-![Nested number sets: naturals inside wholes inside integers inside rationals inside reals](./exponentials/number-sets-nested.png "1200x573")
+![Nested number sets: naturals inside wholes inside integers inside rationals inside reals](./exponentials/number-sets-nested.png)
 
 ## Natural Numbers $\mathbb{N}$
 
@@ -343,7 +343,7 @@ This is the number $e$, we've been searching for it all along. And it's the exac
 
 The "scale factor" as we've been calling it is generally known by another name. $L(b^x) = x\,L(b)$ is a log law giving us the inverse. Raising $e = b^{1/L(b)}$ to the power $L(b)$ gives $b = e^{L(b)}$, so $L(b) = \log_e b$. The scale factor was a logarithm all along. This is what defines the natural logarithm.
 
-![Graphs of e^x and ln x mirrored across the line y = x](./exponentials/exp-ln-inverse.png "65% 800x800")
+![Graphs of e^x and ln x mirrored across the line y = x](./exponentials/exp-ln-inverse.png "65%")
 
 ### Final Thoughts
 

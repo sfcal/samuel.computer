@@ -3,24 +3,24 @@
 // and with it the house and the name.
 import Base from '../layouts/Base.astro';
 import '../styles/home.css';
+import '@fontsource/dynapuff/latin-700.css';   // the name's typeface, only this page
 ---
 
-<Base home>
+<Base>
   <main>
     <h1 class="unseen">Samuel Calvert</h1>
   </main>
 
-  <div class="planet" id="planet" aria-hidden="true">
-    <div class="moon" id="moon"><canvas></canvas></div>
-  </div>
-  <div class="satellite" aria-hidden="true"><span>🛰️</span></div>
+  <div class="planet" id="planet" aria-hidden="true"></div>
+  <div class="satellite" aria-hidden="true">🛰️</div>
   <div class="house" id="house" aria-hidden="true">🏠</div>
   <div class="hills" id="hills" aria-hidden="true"><canvas></canvas></div>
   <div class="name" id="name" aria-hidden="true">
     <div class="name-glass"></div>
     <svg>
       <defs>
-        <clipPath id="name-clip"><use href="#name-text"></use></clipPath>
+        <clipPath id="name-clip-one"><use href="#name-one"></use></clipPath>
+        <clipPath id="name-clip-two"><use href="#name-two"></use></clipPath>
         {/* The bar's edge treatment, for letters: a thin pale line all round, a
             bright line where light catches the top edges, a fainter one along the
             bottom, a soft glow inside the top and a soft shade inside the bottom.
@@ -63,15 +63,24 @@ import '../styles/home.css';
           </feMerge>
         </filter>
       </defs>
-      <g fill="none">
-        {/* the typeface is set here, not in the stylesheet, so that both uses of the text carry it */}
-        <text id="name-text" text-anchor="middle" style="font-family: var(--font-display); font-weight: 700">Samuel Calvert</text>
-      </g>
-      <use href="#name-text" fill="#fff" filter="url(#name-edges)"></use>
+      {/* One line on a wide screen, two on a narrow one: each is its own text with
+          its own clip for the glass, and the stylesheet picks which pair shows. The
+          copy of a text that cuts the glass (the <use> in its clip) takes the text's
+          own attributes and what it inherits from the box, but no stylesheet rule
+          aimed at the text, so the typeface is set here, and a span hidden by the
+          stylesheet inside one shared text would still cut the glass. The dy values
+          put the middle of DynaPuff's line box at the centre of the box: see .name
+          in home.css. */}
+      <text id="name-one" class="one" x="50%" y="50%" dy="0.365em" text-anchor="middle" fill="#fff" filter="url(#name-edges)" style="font-family: var(--font-display); font-weight: 700">Samuel Calvert</text>
+      <text id="name-two" class="two" text-anchor="middle" fill="#fff" filter="url(#name-edges)" style="font-family: var(--font-display); font-weight: 700"><tspan x="50%" y="50%" dy="-0.125em">Samuel</tspan><tspan x="50%" dy="0.98em">Calvert</tspan></text>
     </svg>
   </div>
 
   <script>
-    import '../scripts/home.js';
+    // the home page's scene, on top of what every page runs (see Base.astro)
+    import '../scripts/home/input.js';
+    import '../scripts/home/moon.js';
+    import '../scripts/home/hills.js';
+    import '../scripts/home/name.js';
   </script>
 </Base>

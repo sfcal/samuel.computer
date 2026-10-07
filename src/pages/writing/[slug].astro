@@ -1,27 +1,31 @@
 ---
-import { getCollection, render } from 'astro:content';
 import 'temml/dist/Temml-Local.css';
 import Base from '../../layouts/Base.astro';
-import { isoDate, minutesToRead } from '../../posts.js';
-import '../../styles/pages.css';
 
-export async function getStaticPaths() {
-  const posts = await getCollection('writing');
-  return posts.map(post => ({ params: { slug: post.id }, props: { post } }));
+// One Markdown file per post in src/content/writing/, named by its slug, with
+// its pictures in a folder of the same name beside it.
+export function getStaticPaths() {
+  const posts = import.meta.glob('../../content/writing/*.md', { eager: true });
+  return Object.entries(posts).map(([path, post]) => ({ params: { slug: path.split('/').pop().slice(0, -'.md'.length) }, props: { post } }));
 }
 
+// the frontmatter names the picture shown when the post is shared, relative to the post
+const pictures = import.meta.glob('../../content/writing/*/*.{png,jpg,jpeg,webp}', { eager: true, import: 'default' });
+
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { frontmatter, Content } = post;
+const share = frontmatter.image && pictures[`../../content/writing/${frontmatter.image.replace(/^\.\//, '')}`];
+const minutes = Math.max(1, Math.round(post.rawContent().trim().split(/\s+/).length / 200));   // at 200 words a minute
 ---
 
-<Base title={post.data.title} description={post.data.excerpt} image={post.data.image?.src} published={post.data.date} section="writing">
+<Base title={frontmatter.title} description={frontmatter.excerpt} image={share?.src} published={new Date(frontmatter.date)}>
   <main class="page" id="content">
     <article class="sheet">
       <a class="back" href="/writing/">← All writing</a>
       <header>
-        <p class="meta"><time datetime={isoDate(post)}>{isoDate(post)}</time><span>{minutesToRead(post)} min read</span></p>
-        <h1>{post.data.title}</h1>
-        <p class="meta">{post.data.tags.map(tag => <span class="tag">#{tag}</span>)}</p>
+        <p class="meta"><time datetime={frontmatter.date}>{frontmatter.date}</time><span>{minutes} min read</span></p>
+        <h1>{frontmatter.title}</h1>
+        <p class="meta">{frontmatter.tags.map(tag => <span class="tag">#{tag}</span>)}</p>
       </header>
       <div class="prose"><Content /></div>
       <a class="back" href="/writing/">← All writing</a>
@@ -29,6 +33,24 @@ const { Content } = await render(post);
   </main>
 
   <script>
-    import '../../scripts/videos.js';
+    // A post's videos behave like animated pictures: each plays, silently and on a
+    // loop, only while it is on screen, and is not downloaded until it is nearly
+    // there. Where this cannot be (a reader who asked for less motion, a phone
+    // saving power, no script at all) the video waits behind its controls instead.
+    // This block imports nothing, so Astro inlines it into the page.
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const onScreen = new IntersectionObserver(entries => {
+        for (const { target: video, isIntersecting } of entries) {
+          if (!isIntersecting) video.pause();
+          // a refusal to play unasked brings the controls back; being scrolled away mid-load is no refusal
+          else video.play().catch(error => { if (error.name === 'NotAllowedError') video.controls = true; });
+        }
+      }, { rootMargin: '50% 0px' });
+
+      for (const video of document.querySelectorAll('.prose video')) {
+        video.controls = false;
+        onScreen.observe(video);
+      }
+    }
   </script>
 </Base>

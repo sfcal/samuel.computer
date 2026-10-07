@@ -1,21 +1,6 @@
-# Dependencies
 node_modules/
-
-# Build output and Astro's generated types
 dist/
 .astro/
-
-# Misc
 .DS_Store
-.env*
-.obsidian
-
-# Logs
-npm-debug.log*
-
-# Editor
 .claude/
-.vscode/
-.idea/
-*.swp
-*.swo
+.obsidian
