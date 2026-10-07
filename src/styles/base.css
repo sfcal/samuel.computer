@@ -72,7 +72,7 @@ body {
 /* the cloud layer: one tile taller than the window, slid up and down by script */
 .clouds {
   height: calc(100% + 181px);
-  background: url("../assets/sky/clouds.webp") repeat;
+  background: url("../assets/sky/clouds.png") repeat;
   transform: translate3d(0, var(--clouds-y, -52px), 0);   /* where the last page left it (put back in Base.astro, then kept up by sky.js); the fallback is a first visit's daylight, 1500 % 181 from FADE and TILE there */
   will-change: transform;
 }
