@@ -1,7 +1,9 @@
 // Moon: the full Moon, near side facing, gently wobbling, as a sphere of text
-// characters. Where the browser has WebGPU, a shader adds the glow.
+// characters whose shades are read off a picture of its surface. Where the
+// browser has WebGPU, a shader adds the glow.
 import { reducedMotion, sky, smoothstep, watch } from '../sky.js';
 import { every } from '../ticker.js';
+import TEXTURE from '../../assets/moon.png?url';
 
 const box = document.getElementById('planet');
 const hdrDisplay = matchMedia('(dynamic-range: high)');
@@ -23,135 +25,47 @@ const RAMP = '.:-=+tvcxoB8%W#M@';  // characters from faintest to brightest
 const DISC = '#030304';
 const DEG = Math.PI / 180;
 
-// a surface feature's position, with east and north directions at that spot
-function place(lat, lon) {
-  const cosLat = Math.cos(lat * DEG);
-  const c = [cosLat * Math.sin(lon * DEG), Math.sin(lat * DEG), cosLat * Math.cos(lon * DEG)];
-  const e = [Math.cos(lon * DEG), 0, -Math.sin(lon * DEG)];
-  const n = [c[1] * e[2] - c[2] * e[1], c[2] * e[0] - c[0] * e[2], c[0] * e[1] - c[1] * e[0]];
-  return { c, e, n };
-}
+// The surface is one picture: an equirectangular map of the Moon, made once
+// from the surface model this file used to carry (27 maria as ragged ovals,
+// 11 rayed craters and noise; it is in the file's git history). Red is
+// brightness, green how much of the spot is mare, and blue that mare's tint,
+// with 128 neutral, below bluish and above brownish. Nothing is drawn until
+// the picture has arrived, so a cold visit at night shows the Moon a moment late.
+let map = null;                   // the picture's pixels, once loaded: { width, height, data }
 
-// The dark lava plains (maria) at their real positions, as overlapping ovals:
-// latitude, longitude, half-height, half-width (degrees of arc), darkness
-// (lower is darker) and tint (above 0 brownish, below 0 bluish).
-const MARIA = [
-  [35, -17, 18, 21, 0.30, 0.5],     // Mare Imbrium
-  [22, -58, 26, 19, 0.29, 0.2],     // Oceanus Procellarum
-  [46, -52, 13, 15, 0.32, 0.2],     //   ... Sinus Roris, its northern reach
-  [2, -50, 18, 19, 0.28, 0.1],      //   ... its southern reach
-  [-12, -38, 10, 12, 0.30, 0.1],    //   ... down toward Humorum
-  [7, -30, 10, 12, 0.32, 0.3],      // Mare Insularum
-  [-10, -23, 9, 10, 0.30, 0.2],     // Mare Cognitum
-  [-21, -16, 12, 14, 0.30, 0.2],    // Mare Nubium
-  [-24, -39, 8.5, 8.5, 0.27, 0.1],  // Mare Humorum
-  [11, -9, 5, 5.5, 0.34, 0.2],      // Sinus Aestuum
-  [13, 4, 6, 6.5, 0.32, 0.3],       // Mare Vaporum
-  [2, 1, 3.5, 5, 0.36, 0.2],        // Sinus Medii
-  [27, 18, 12, 13, 0.31, 0.7],      // Mare Serenitatis
-  [38, 30, 5, 7, 0.36, 0.3],        // Lacus Somniorum
-  [17, 25, 6, 7, 0.27, -0.5],       // the strait between Serenitatis and Tranquillitatis
-  [8, 31, 13, 16, 0.24, -1],        // Mare Tranquillitatis
-  [-5, 28, 6, 6, 0.28, -0.4],       // Sinus Asperitatis
-  [-15, 35, 7, 7, 0.29, 0.1],       // Mare Nectaris
-  [-6, 51, 15, 11, 0.28, -0.3],     // Mare Fecunditatis
-  [17, 59, 8, 10.5, 0.25, -0.2],     // Mare Crisium
-  [56, 4, 5, 27, 0.35, 0.2],         // Mare Frigoris
-  [57, -36, 4.5, 13, 0.36, 0.2],    //   ... its western arm
-  [51.6, -9.4, 2.4, 2.8, 0.25, 0],   // Plato
-  [-5, -68, 4, 4, 0.25, 0],          // Grimaldi
-  [1, 87, 6, 5, 0.30, 0],           // Mare Smythii
-  [13, 86, 6, 5, 0.32, 0],          // Mare Marginis
-  [-39, 93, 9, 9, 0.36, 0],         // Mare Australe
-].map(m => Object.assign(place(m[0], m[1]), {
-  high: m[2], wide: m[3], shade: m[4], tint: m[5],
-  reach: Math.cos(Math.min(89, Math.max(m[2], m[3]) * 1.6) * DEG),
-}));
-
-// Young craters with bright rays: latitude, longitude, core radius, ray length, strength
-const RAYED = [
-  [-43, -11, 2.6, 55, 1.0],   // Tycho, whose rays cross half the disc
-  [10, -20, 3.2, 15, 0.85],   // Copernicus
-  [8, -38, 2.2, 9, 0.75],     // Kepler
-  [24, -47, 2.2, 7, 1.0],     // Aristarchus
-  [16, 47, 1.8, 9, 0.75],     // Proclus
-  [-9, 61, 2.4, 8, 0.6],      // Langrenus
-  [-32, 54, 2.2, 14, 0.75],   // Stevinus
-  [-24.5, -64, 2.0, 10, 0.75],// Byrgius
-  [73, -10, 2.2, 14, 0.7],    // Anaxagoras
-  [62, 50, 1.8, 9, 0.6],      // Thales
-  [16, 16, 1.4, 5, 0.5],      // Menelaus
-].map((r, i) => Object.assign(place(r[0], r[1]), { core: r[2], rays: r[3], strength: r[4], id: i, reach: Math.cos(r[3] * DEG) }));
-
-const seed = 1969;                // fixed, so it is the same Moon on every visit
-// smooth 3D noise from an integer hash, for ragged edges and surface texture
-function hash(h) {
-  h = Math.imul(h ^ (h >>> 13), 1274126177);
-  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
-}
-const mix = (a, b, k) => a + (b - a) * k;
-function noise(x, y, z) {
-  const x0 = Math.floor(x), y0 = Math.floor(y), z0 = Math.floor(z);
-  const fx = x - x0, fy = y - y0, fz = z - z0;
-  const u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy), w = fz * fz * (3 - 2 * fz);
-  // each corner's hash stirs together an x, a y and a z term; the eight
-  // corners share six of those between them, so each is worked out once
-  const xa = Math.imul(x0, 374761393), xb = Math.imul(x0 + 1, 374761393);
-  const ya = Math.imul(y0, 668265263), yb = Math.imul(y0 + 1, 668265263);
-  const za = Math.imul(z0, 2147483647) ^ seed, zb = Math.imul(z0 + 1, 2147483647) ^ seed;
-  return mix(
-    mix(mix(hash(xa ^ ya ^ za), hash(xb ^ ya ^ za), u), mix(hash(xa ^ yb ^ za), hash(xb ^ yb ^ za), u), v),
-    mix(mix(hash(xa ^ ya ^ zb), hash(xb ^ ya ^ zb), u), mix(hash(xa ^ yb ^ zb), hash(xb ^ yb ^ zb), u), v),
-    w);
-}
-function fbm(x, y, z, octaves) {
-  let sum = 0, amp = 0.5, total = 0;
-  for (let o = 0; o < octaves; o++) {
-    sum += amp * noise(x, y, z); total += amp;
-    x = x * 2.1 + 5.3; y = y * 2.1 + 1.7; z = z * 2.1 + 9.2; amp *= 0.5;
-  }
-  return sum / total;
-}
-
-const dot = (a, x, y, z) => a[0] * x + a[1] * y + a[2] * z;
+fetch(TEXTURE).then(r => r.blob())
+  .then(blob => createImageBitmap(blob))           // the PNG is untagged and opaque, so it decodes as is
+  .then(bitmap => {
+    // an ordinary canvas rather than an OffscreenCanvas, for older Safari
+    const { width, height } = bitmap;
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bitmap, 0, 0);
+    bitmap.close();                                // the decoded bitmap is spent; only the pixels are kept
+    map = { width, height, data: ctx.getImageData(0, 0, width, height).data };
+    redraw();
+  }).catch(() => {});                                // no picture, no Moon, as with a broken image
 
 // The Moon's surface at a latitude and longitude (degrees): brightness 0 to 1,
-// how much of the spot is mare, and that mare's tint.
+// how much of the spot is mare, and that mare's tint, -1 to 1. Read off the
+// picture between its four nearest texels; longitude wraps round, latitude
+// stops at the poles.
 function surface(lat, lon) {
-  const cosLat = Math.cos(lat * DEG), y = Math.sin(lat * DEG);
-  const x = cosLat * Math.sin(lon * DEG), z = cosLat * Math.cos(lon * DEG);
-
-  // maria: inside any oval, with the outline roughened so it is not a clean ellipse
-  const ragged = (fbm(x * 4.2 + 2, y * 4.2 + 6, z * 4.2 + 4, 3) - 0.5) * 1.1;
-  let mare = 0, shade = 0, tint = 0, weight = 0;
-  for (const m of MARIA) {
-    if (dot(m.c, x, y, z) < m.reach) continue;
-    const up = Math.asin(dot(m.n, x, y, z)) / DEG, across = Math.asin(dot(m.e, x, y, z)) / DEG;
-    const inside = 1 - smoothstep(0.7, 1.15, (up / m.high) ** 2 + (across / m.wide) ** 2 + ragged);
-    if (inside <= 0) continue;
-    mare = Math.max(mare, inside);
-    shade += m.shade * inside; tint += m.tint * inside; weight += inside;
+  const { width, height, data } = map;
+  const u = (lon / 360 + 0.5) * width - 0.5, v = (0.5 - lat / 180) * height - 0.5;
+  const i0 = Math.floor(u), j0 = Math.floor(v), fu = u - i0, fv = v - j0;
+  const ia = ((i0 % width) + width) % width, ib = (ia + 1) % width;
+  const ja = Math.max(0, Math.min(height - 1, j0)), jb = Math.max(0, Math.min(height - 1, j0 + 1));
+  const out = [0, 0, 0];
+  for (let k = 0; k < 3; k++) {
+    const top = data[(ja * width + ia) * 4 + k] * (1 - fu) + data[(ja * width + ib) * 4 + k] * fu;
+    const bottom = data[(jb * width + ia) * 4 + k] * (1 - fu) + data[(jb * width + ib) * 4 + k] * fu;
+    out[k] = (top * (1 - fv) + bottom * fv) / 255;
   }
-  if (weight) { shade /= weight; tint /= weight; }
-
-  // highlands are bright and rough; maria are dark and smooth
-  const rough = fbm(x * 6.5 + 11, y * 6.5 + 4, z * 6.5 + 7, 3) - 0.5;
-  let bright = 0.72 + rough * 0.22;
-  bright += (shade + rough * 0.1 - bright) * mare;
-
-  // rayed craters: a white core, a bright apron, and thin streaks fanning out
-  for (const r of RAYED) {
-    const along = dot(r.c, x, y, z);
-    if (along < r.reach) continue;
-    const away = Math.acos(Math.min(1, along)) / DEG;
-    const bearing = Math.atan2(dot(r.e, x, y, z), dot(r.n, x, y, z));
-    const streak = smoothstep(0.54, 0.7, noise(Math.cos(bearing) * 6.2 + r.id * 13.1, Math.sin(bearing) * 6.2 + r.id * 7.3, 0.5));
-    const fade = Math.pow(1 - away / r.rays, 1.5);
-    const apron = 1 - smoothstep(r.core, r.core * 3.2, away);
-    bright += r.strength * (0.36 * streak * fade + 0.14 * apron);
-    bright += (1 - bright) * (1 - smoothstep(r.core * 0.6, r.core * 1.5, away)) * r.strength;
-  }
-  return [Math.min(1, Math.max(0, bright)), mare, tint];
+  out[2] = out[2] * 2 - 1;
+  return out;
 }
 
 /* -- the characters, drawn with the ordinary 2D canvas -- */
@@ -299,8 +213,9 @@ let rebuild = null;               // sizes that renderer's canvases to the box
 let showing = false;              // whether the Moon can be seen, and so is being drawn
 
 // With reduced motion the Moon holds still, redrawn once a second only so a
-// GPU canvas cannot be left blank.
-const frame = now => paint(reducedMotion.matches ? 0 : now / 1000);
+// GPU canvas cannot be left blank. Before the picture nothing is painted at
+// all, not even the shader's halo, which would otherwise ring an empty sky.
+const frame = now => { if (map) paint(reducedMotion.matches ? 0 : now / 1000); };
 const moving = every(FRAME_MS, frame), still = every(1000, frame);
 
 // start drawing afresh at the pace motion allows, or stop
@@ -414,7 +329,7 @@ function useShader({ device, pipeline }) {
   redraw();
 }
 
-useCanvas();                                         // show something at once
+useCanvas();                                         // a renderer straight away; the GPU one takes over if it comes
 fit();
 startShader().then(gpu => { if (gpu) useShader(gpu); }).catch(() => {});
 
