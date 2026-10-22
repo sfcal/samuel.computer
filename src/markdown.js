@@ -45,7 +45,9 @@ const markdown = {
     }
     const share = parseFloat(maxWidth ?? 100) / 100;
     const sizes = `(min-width: ${COLUMN + 128}px) ${Math.round(COLUMN * share)}px, ${Math.round(90 * share)}vw`;
-    return { ...node, title: null, data: { hProperties: { sizes, style } } };
+    // a photo stays a JPEG; everything else becomes the near-lossless WebP set in astro.config.mjs
+    const format = /\.jpe?g$/i.test(node.url) ? 'jpg' : undefined;
+    return { ...node, title: null, data: { hProperties: { sizes, style, format } } };
   },
 
   // "> [!note]- Title" folds away under its title ("-" starts closed, "+" open)

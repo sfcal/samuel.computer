@@ -531,6 +531,7 @@ And that's it! Let's see how our minimal VM NTP server compares to NPL caesium f
 | client offset                        | server ahead by ~4.3 ms | server ahead by ~5.0 ms      |
 | Reply TTL                            | 110 (18 hops)           | 63 (1 hop)                   |
 | Error bound (root distance)          | about 3.9 ms            | about 4.8 ms                 |
+
 Both captures are measuring *my laptop's* offset, not each server's, and each is only as good as the symmetry of its path, so the 0.65 ms disagreement doesn't tell us which is "right". What we can compare is the error budget: the VM is *literally* syncing itself to NPL, so its root delay and dispersion stack on top of NPL's, and its bound comes out 4.8 ms against 3.9 ms. But not all is lost! There's lots of low hanging fruit still left to be captured. 
 
 What sticks out to me the most here is the 82 µs turnaround time. This is an order of magnitude worse than NPL and almost certainly because the hypervisor needs to wake the vCPU before firing off its reply. This can be seen most clearly in its spread of 49–149 µs for a reply where NPL stays mostly consistent. 
